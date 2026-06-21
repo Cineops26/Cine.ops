@@ -854,7 +854,44 @@
     font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
   }
   .pwa-dismiss { background: none !important; color: var(--text-dim) !important; padding: 0 !important; font-size: 1rem !important; }
-  /* ── BACK BUTTON ─────────────────────────────── */
+  /* ── SHEETS ───────────────────────────────────────────────── */
+  .sheet-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: border-color 0.15s;
+  }
+  .sheet-card:hover { border-color: var(--accent); }
+  .sheet-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .sheet-info { flex: 1; min-width: 0; }
+  .sheet-name { font-weight: 600; color: var(--text); font-size: 0.9rem; margin-bottom: 0.15rem; }
+  .sheet-desc { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sheet-url { font-size: 0.7rem; color: var(--text-dim); font-family: 'DM Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sheet-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+  .sheet-open-btn {
+    background: var(--accent); color: var(--bg); border: none;
+    border-radius: 6px; padding: 0.35rem 0.8rem; font-size: 0.78rem;
+    font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .sheet-open-btn:hover { background: #f0d060; }
+  .sheet-del-btn {
+    background: none; border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text-dim); font-size: 0.78rem; padding: 0.35rem 0.6rem;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .sheet-del-btn:hover { border-color: var(--red); color: var(--red); }
+  .sheets-empty {
+    text-align: center; padding: 2rem;
+    color: var(--text-dim); font-size: 0.85rem;
+  }
+  .sheets-empty .empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+ ─────────────────────────────── */
   .back-btn {
     display: none;
     align-items: center;
@@ -930,6 +967,31 @@
     /* show back button on mobile whenever a panel is active */
     .back-btn { display: flex; }
   }
+
+  @media print {
+    header,.sidebar,.input-area,.back-btn,.hamburger-btn,.lang-dropdown,
+    .notif-toast,.pwa-banner,.timer-fab,.timer-widget,.sidebar-overlay,
+    .img-manager,.page-note,.fav-btn,.lang-banner,.print-pg-btn,
+    #chat-search-bar { display:none!important; }
+    body { background:#fff!important; color:#000!important; }
+    .layout { display:block!important; height:auto!important; }
+    .main { display:block!important; overflow:visible!important; }
+    .wiki-panel { display:none!important; }
+    .wiki-panel.active { display:block!important; }
+    #view-chat { display:none!important; }
+    .wiki-content h2 { color:#000!important; }
+    .wiki-content h3 { color:#222!important; }
+    .wiki-content p,.wiki-content li,.wiki-content td { color:#111!important; }
+    .wiki-content th { background:#eee!important; color:#000!important; }
+    .alert { border:2px solid #c00!important; color:#c00!important; background:#fff0f0!important; }
+    .tip { border:1px solid #888!important; color:#333!important; }
+  }
+  .print-pg-btn {
+    float:right; background:none; border:1px solid var(--border);
+    border-radius:5px; color:var(--text-dim); font-size:0.75rem;
+    padding:0.25rem 0.6rem; cursor:pointer; margin-top:0.2rem;
+  }
+  .print-pg-btn:hover { border-color:var(--accent); color:var(--accent); }
 </style>
 </head>
 <body>
@@ -980,6 +1042,9 @@
       </div>
       <div class="sidebar-item" onclick="showView('filmid')" data-search="identify film type format visual guide 8mm">
         <div class="sidebar-item-left"><span class="sidebar-icon">🔍</span> <span data-i18n-text="nav.filmid">Film ID Guide</span></div>
+      </div>
+      <div class="sidebar-item" onclick="showView('sheets')" data-search="sheets google spreadsheet links">
+        <div class="sidebar-item-left"><span class="sidebar-icon">📊</span> Sheets</div>
       </div>
     </div>
     <!-- RECENT -->
@@ -1118,7 +1183,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-1">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎞️ MMT Scanner</h2>
+        <h2>🎞️ MMT Scanner</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Developer:</strong> Martin &nbsp;|&nbsp; <strong>Support:</strong> mmtelecine@gmail.com &nbsp;|&nbsp; <strong>Price:</strong> €5,850</p>
 
         <!-- SVG: MMT Threading Diagram -->
@@ -1199,7 +1264,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-2">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>📽️ RetroScan (Movistuff)</h2>
+        <h2>📽️ RetroScan (Movistuff)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Price:</strong> €11,700 (negligible — manufacturer bankrupt) &nbsp;|&nbsp; <strong>Type:</strong> Workhorse / Universal Machine</p>
 
         <!-- SVG: RetroScan Threading Diagram -->
@@ -1272,7 +1337,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-3">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>⚡ Film-Digital (FD) Units</h2>
+        <h2>⚡ Film-Digital (FD) Units</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Price:</strong> ~€2,340 &nbsp;|&nbsp; <strong>Type:</strong> Fastest Machine / Throughput Focus</p>
         <table>
           <tr><th>Aspect</th><th>Pros</th><th>Cons</th><th>Workflow Impact</th></tr>
@@ -1312,7 +1377,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-4">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 Super 8 Film</h2>
+        <h2>🎬 Super 8 Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced by <strong>Kodak in 1965</strong>. Larger image area than Regular 8, simple cartridge-loading system.</p>
 
         <!-- SVG ILLUSTRATION -->
@@ -1381,7 +1446,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-5">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 Regular 8 / Standard 8</h2>
+        <h2>🎬 Regular 8 / Standard 8</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced in the <strong>1930s</strong> as a compact, affordable alternative to 16mm. Vintage look, popular with collectors and experimental filmmakers.</p>
 
         
@@ -1436,7 +1501,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-6">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 9.5mm Pathé Film</h2>
+        <h2>🎬 9.5mm Pathé Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced in <strong>1922 by Pathé Frères</strong> as "Pathé Baby". First popular home cinema format in Europe. Unique central perforation between each frame.</p>
 
         
@@ -1486,7 +1551,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-7">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 16mm Film</h2>
+        <h2>🎬 16mm Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced by <strong>Eastman Kodak in 1923</strong>. Cost-effective alternative to 35mm. Still widely used for documentaries, student films and art projects.</p>
 
         
@@ -1542,7 +1607,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-8">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 35mm Film</h2>
+        <h2>🎬 35mm Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>The gold standard of professional filmmaking. Introduced by <strong>Thomas Edison & William Dickson</strong> in the late 19th century. Still used by Nolan, Tarantino, and PTA today.</p>
 
         
@@ -1593,7 +1658,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-9">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>⚠️ Vinegar Syndrome</h2>
+        <h2>⚠️ Vinegar Syndrome</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Chemical deterioration of <strong>cellulose acetate film</strong>. Releases acetic acid — self-accelerating decay process. Highly contagious within archival collections.</p>
 
         
@@ -1660,7 +1725,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-10">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>⚠️ Tenite Reel Decay</h2>
+        <h2>⚠️ Tenite Reel Decay</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Chemical breakdown of the <strong>plastic spool</strong>, commonly found on grey 50ft 8mm reels. Frequently mistaken for mould — requires different handling.</p>
 
         <!-- SVG: Tenite reel with chalky bloom -->
@@ -1724,7 +1789,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-11">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🦠 Mouldy Film — Biological Hazard</h2>
+        <h2>🦠 Mouldy Film — Biological Hazard</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Mould is a biological growth that thrives on moisture and organic material (like film emulsion). <strong>Health hazard!</strong> Produces spores and mycotoxins that cause respiratory issues and skin irritation.</p>
 
         <!-- SVG: Mouldy film strip -->
@@ -1788,7 +1853,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-12">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>💧 Water Damage</h2>
+        <h2>💧 Water Damage</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Water damage is a severe threat to film integrity. Moisture causes the gelatin emulsion to swell and become tacky. Leads to permanent image loss, physical distortion, and is the primary catalyst for mould growth.</p>
 
         
@@ -1844,7 +1909,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-13">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🔥 Nitrate Film (Hazardous Material)</h2>
+        <h2>🔥 Nitrate Film (Hazardous Material)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Cellulose Nitrate was the industry standard until the mid-20th century. <strong>Inherently unstable and highly flammable.</strong> Contains its own oxygen source — once ignited, almost impossible to extinguish. Almost exclusively found in <strong>35mm</strong>.</p>
 
         
@@ -1902,7 +1967,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-14">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🔊 Magnetic Sound (Magstripe)</h2>
+        <h2>🔊 Magnetic Sound (Magstripe)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Think of it as a long piece of <strong>cassette tape glued directly onto the film edge</strong>. The film carries audio right alongside the images.</p>
 
         
@@ -1959,7 +2024,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-15">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>〰️ Optical Sound</h2>
+        <h2>〰️ Optical Sound</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Optical sound is like a <strong>"barcode for audio"</strong>. Unlike magnetic sound, it is photographed directly onto the film. The audio is literally part of the image itself.</p>
 
         
@@ -2012,7 +2077,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-16">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎙️ Sepmag (Separate Magnetic)</h2>
+        <h2>🎙️ Sepmag (Separate Magnetic)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Picture and sound stored on <strong>two completely separate reels</strong>. No soundtrack on the film strip itself.</p>
 
         
@@ -2053,7 +2118,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-17">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>💻 AEO-Light: Extracting Optical Sound</h2>
+        <h2>💻 AEO-Light: Extracting Optical Sound</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
 
         <h3>1. Start a Project</h3>
         <p>Open AEO-Light → File &gt; New Project → select your source folder. <em>Note: DPX or TIFF image sequences preferred, but video files are also supported.</em></p>
@@ -2119,13 +2184,13 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-18">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>✅ Quick-Check: Scan Process (SOP)</h2>
+        <h2>✅ Quick-Check: Scan Process (SOP)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <button class="print-btn" onclick="window.print()">🖨️ Print Checklist</button>
 
         <h3>1. Pre-Production</h3>
         <ul class="checklist">
           <li>App Sync: Does the Order ID and total reel count match the physical job?</li>
-          <li>Film Inspection: Checked type (Pos/Neg) &amp; quality?</li>
+          <li>Film Inspection: Checked format (8mm / 9.5mm / 16mm / 35mm) &amp; quality?</li>
           <li>Document damages/anomalies immediately in the Warehouse App!</li>
           <li>Cleanliness: Machine, film path and gate completely free of dust?</li>
           <li>Software Setup: MMT/FD — Order number correctly entered? RetroScan — New album created with correct Order number?</li>
@@ -2133,16 +2198,15 @@
 
         <h3>2. Machine Setup</h3>
         <ul class="checklist">
-          <li>Threading: Perforation facing the machine? Film path correct?</li>
+          <li>Threading: Perforation correctly oriented for the scanner being used? Film path correct?</li>
           <li>Technical: Focus sharp? Histogram (Exposure) centred?</li>
           <li>Audio: Optical track visible or magnetic head (FD1/FD2) aligned?</li>
         </ul>
 
         <h3>3. Active Scan</h3>
         <ul class="checklist">
-          <li>Leader: Captured at least 5 seconds of leader?</li>
+          <li>Leader: Captured at least 3 seconds of leader?</li>
           <li>Monitoring: Active supervision of stability, focus and sound</li>
-          <li>Tail: Captured at least 5 seconds of tail/trailer?</li>
         </ul>
 
         <h3>4. Completion &amp; QA</h3>
@@ -2182,7 +2246,7 @@
 
     <!-- WIZARD PANEL -->
     <div class="wiki-panel wizard-panel" id="view-wizard">
-      <h2>🧭 Machine Wizard</h2>
+      <h2>🧭 Machine Wizard</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
       <p style="color:var(--text-mid);font-size:0.875rem;margin-bottom:1.5rem;">Answer 3 quick questions to find the right scanner for your film.</p>
 
       <div class="wizard-progress">
@@ -2288,6 +2352,35 @@
       <button class="notif-dismiss" onclick="dismissNotif()">✕</button>
     </div>
 
+    <!-- SHEETS PANEL -->
+    <div class="wiki-panel" id="view-sheets">
+      <div class="wiki-content">
+        <div class="lang-banner">🌐 <span data-i18n="banner.text">Panel content is in English.</span></div>
+        <h2>📊 Sheets</h2>
+        <button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
+        <p style="color:var(--text-mid);font-size:0.875rem;margin-bottom:1.5rem;">Save and access your Google Sheets links here. Links are stored locally in your browser.</p>
+
+        <!-- Add new sheet form -->
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem;">
+          <div style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:1rem;">➕ Add a Sheet</div>
+          <div style="display:flex;flex-direction:column;gap:0.65rem;">
+            <input id="sheet-name-input" type="text" placeholder="Sheet name (e.g. Daily Log 2025)"
+              style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.55rem 0.75rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;width:100%;">
+            <input id="sheet-url-input" type="url" placeholder="Google Sheets URL (https://docs.google.com/...)"
+              style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.55rem 0.75rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;width:100%;">
+            <input id="sheet-desc-input" type="text" placeholder="Description (optional)"
+              style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.55rem 0.75rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;width:100%;">
+            <button onclick="addSheet()" style="background:var(--accent);color:var(--bg);border:none;border-radius:7px;padding:0.55rem 1.1rem;font-size:0.875rem;font-weight:600;cursor:pointer;align-self:flex-start;transition:all 0.15s;">
+              Save Sheet
+            </button>
+          </div>
+        </div>
+
+        <!-- Sheet list -->
+        <div id="sheets-list"></div>
+      </div>
+    </div>
+
     <!-- FOREWORD PANEL -->
     <div class="wiki-panel" id="view-foreword">
       <div class="foreword-panel">
@@ -2325,7 +2418,7 @@
     <!-- FILM ID GUIDE PANEL -->
     <div class="wiki-panel" id="view-filmid">
       <div class="filmid-panel">
-        <h2>🔍 Film Identification Guide</h2>
+        <h2>🔍 Film Identification Guide</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
 
         <div class="filmid-diagram">
           <h3>Step-by-Step: Which film do I have?</h3>
@@ -2868,6 +2961,8 @@ function showView(view, pushHistory) {
 
   // track recent
   addToRecent(view);
+  // reload sheets when visiting panel
+  if (view === 'sheets') loadSheets();
 
   // close sidebar on mobile
   closeSidebar();
@@ -4429,6 +4524,67 @@ if (!document.getElementById('img-file-input')) {
 }
 
 
+
+window.addEventListener('beforeprint', function() {
+  document.querySelectorAll('.wiki-panel').forEach(p => p.classList.remove('active'));
+  const cur = document.getElementById('view-' + currentView);
+  if (cur) cur.classList.add('active');
+});
+
+// ===== SHEETS =====
+function loadSheets() {
+  const sheets = JSON.parse(localStorage.getItem('cineops_sheets') || '[]');
+  const list = document.getElementById('sheets-list');
+  if (!list) return;
+  if (sheets.length === 0) {
+    list.innerHTML = '<div class="sheets-empty"><div class="empty-icon">📊</div><p>No sheets saved yet.<br>Add your first Google Sheet link above.</p></div>';
+    return;
+  }
+  list.innerHTML = sheets.map((s, i) => `
+    <div class="sheet-card">
+      <div class="sheet-icon">📊</div>
+      <div class="sheet-info">
+        <div class="sheet-name">${escHtml(s.name)}</div>
+        ${s.desc ? `<div class="sheet-desc">${escHtml(s.desc)}</div>` : ''}
+        <div class="sheet-url">${escHtml(s.url)}</div>
+      </div>
+      <div class="sheet-actions">
+        <button class="sheet-open-btn" onclick="window.open('${escHtml(s.url)}','_blank')">🔗 Open</button>
+        <button class="sheet-del-btn" onclick="deleteSheet(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function addSheet() {
+  const name = document.getElementById('sheet-name-input')?.value.trim();
+  const url  = document.getElementById('sheet-url-input')?.value.trim();
+  const desc = document.getElementById('sheet-desc-input')?.value.trim();
+  if (!name) { showToast('⚠️ Please enter a sheet name.'); return; }
+  if (!url || !url.startsWith('http')) { showToast('⚠️ Please enter a valid URL.'); return; }
+  const sheets = JSON.parse(localStorage.getItem('cineops_sheets') || '[]');
+  sheets.push({ name, url, desc: desc || '' });
+  localStorage.setItem('cineops_sheets', JSON.stringify(sheets));
+  document.getElementById('sheet-name-input').value = '';
+  document.getElementById('sheet-url-input').value = '';
+  document.getElementById('sheet-desc-input').value = '';
+  loadSheets();
+  showToast('📊 Sheet saved: ' + name);
+}
+
+function deleteSheet(idx) {
+  const sheets = JSON.parse(localStorage.getItem('cineops_sheets') || '[]');
+  const name = sheets[idx]?.name || 'Sheet';
+  sheets.splice(idx, 1);
+  localStorage.setItem('cineops_sheets', JSON.stringify(sheets));
+  loadSheets();
+  showToast('🗑️ Removed: ' + name);
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // Init
 captureEnContent();
 applyTranslations();
@@ -4437,6 +4593,7 @@ initTheme();
 initPwaBanner();
 loadAllNotes();
 loadAllImages();
+loadSheets();
 renderFavourites();
 renderRecent();
 updateFavButtons();
