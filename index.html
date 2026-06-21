@@ -615,8 +615,16 @@
   .sidebar-item-left span:not(.sidebar-icon) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* ── PRINT BUTTON ────────────────────────────────────────── */
+  .print-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text-mid); font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem; padding: 0.35rem 0.8rem; cursor: pointer;
+    margin: 0.75rem 0; transition: all 0.15s;
+  }
   .print-btn:hover { border-color: var(--accent); color: var(--accent); }
-  
+  @media print {
+    header, .sidebar, .input-area, .back-btn, .print-btn, .lang-dropdown { display: none !important; }
     .wiki-panel { display: block !important; }
     .layout { display: block; }
     body { background: white; color: black; }
@@ -846,116 +854,6 @@
     font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
   }
   .pwa-dismiss { background: none !important; color: var(--text-dim) !important; padding: 0 !important; font-size: 1rem !important; }
-
-  /* ── PRINT STYLES ─────────────────────────────────────────── */
-  @media print {
-    /* Hide everything except the active panel */
-    header, .sidebar, .input-area, .back-btn,
-    .hamburger-btn, .timer-fab, .timer-widget,
-    .lang-dropdown, .pwa-banner, .notif-toast,
-    .sidebar-overlay, #chat-search-bar,
-    .img-manager, .page-note, .print-section-btn,
-    .lang-banner, .fav-btn { display: none !important; }
-
-    body { background: white !important; color: black !important; margin: 0; }
-    .layout { display: block !important; height: auto !important; }
-    .main { display: block !important; height: auto !important; overflow: visible !important; }
-
-    /* Only show the active panel */
-    .wiki-panel { display: none !important; overflow: visible !important; }
-    .wiki-panel.active { display: block !important; }
-    #view-chat { display: none !important; }
-
-    /* Typography for print */
-    .wiki-content h2 {
-      font-family: Arial, sans-serif !important;
-      color: #000 !important;
-      font-size: 20pt !important;
-      border-bottom: 2px solid #000 !important;
-      padding-bottom: 6pt !important;
-      margin-bottom: 12pt !important;
-    }
-    .wiki-content h3 {
-      font-family: Arial, sans-serif !important;
-      color: #222 !important;
-      font-size: 13pt !important;
-      margin-top: 14pt !important;
-    }
-    .wiki-content p, .wiki-content li {
-      font-family: Arial, sans-serif !important;
-      color: #111 !important;
-      font-size: 10pt !important;
-      line-height: 1.5 !important;
-    }
-    .wiki-content table {
-      width: 100% !important;
-      border-collapse: collapse !important;
-      font-size: 9pt !important;
-      margin: 10pt 0 !important;
-    }
-    .wiki-content td, .wiki-content th {
-      border: 1px solid #888 !important;
-      padding: 5pt 7pt !important;
-      color: #000 !important;
-    }
-    .wiki-content th { background: #eee !important; font-weight: bold !important; }
-    .alert {
-      border: 2px solid #c00 !important;
-      background: #fff0f0 !important;
-      color: #c00 !important;
-      padding: 8pt !important;
-      border-radius: 0 !important;
-      font-size: 10pt !important;
-      font-family: Arial, sans-serif !important;
-    }
-    .tip {
-      border: 1px solid #666 !important;
-      background: #f8f8f0 !important;
-      color: #333 !important;
-      padding: 8pt !important;
-      border-radius: 0 !important;
-      font-size: 10pt !important;
-      font-family: Arial, sans-serif !important;
-    }
-    .checklist li::before { content: "☐ " !important; }
-    .wiki-content ul { padding-left: 18pt !important; }
-    .wiki-content li { margin-bottom: 4pt !important; }
-
-    /* Print header with page name */
-    .wiki-panel.active::before {
-      content: "CineOps Film Department Handbook";
-      display: block;
-      font-family: Arial, sans-serif;
-      font-size: 9pt;
-      color: #666;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 4pt;
-      margin-bottom: 16pt;
-    }
-    /* Page break control */
-    h3 { page-break-after: avoid !important; }
-    table { page-break-inside: avoid !important; }
-    .alert, .tip { page-break-inside: avoid !important; }
-  }
-
-  /* ── PRINT BUTTON (per section) ───────────────────────────── */
-  .print-section-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text-mid);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    padding: 0.35rem 0.8rem;
-    cursor: pointer;
-    margin-bottom: 1.25rem;
-    transition: all 0.15s;
-  }
-  .print-section-btn:hover { border-color: var(--accent); color: var(--accent); }
-
   /* ── BACK BUTTON ─────────────────────────────── */
   .back-btn {
     display: none;
@@ -1032,6 +930,31 @@
     /* show back button on mobile whenever a panel is active */
     .back-btn { display: flex; }
   }
+
+  @media print {
+    header,.sidebar,.input-area,.back-btn,.hamburger-btn,.lang-dropdown,
+    .notif-toast,.pwa-banner,.timer-fab,.timer-widget,.sidebar-overlay,
+    .img-manager,.page-note,.fav-btn,.lang-banner,.print-pg-btn,
+    #chat-search-bar { display:none!important; }
+    body { background:#fff!important; color:#000!important; }
+    .layout { display:block!important; height:auto!important; }
+    .main { display:block!important; overflow:visible!important; }
+    .wiki-panel { display:none!important; }
+    .wiki-panel.active { display:block!important; }
+    #view-chat { display:none!important; }
+    .wiki-content h2 { color:#000!important; }
+    .wiki-content h3 { color:#222!important; }
+    .wiki-content p,.wiki-content li,.wiki-content td { color:#111!important; }
+    .wiki-content th { background:#eee!important; color:#000!important; }
+    .alert { border:2px solid #c00!important; color:#c00!important; background:#fff0f0!important; }
+    .tip { border:1px solid #888!important; color:#333!important; }
+  }
+  .print-pg-btn {
+    float:right; background:none; border:1px solid var(--border);
+    border-radius:5px; color:var(--text-dim); font-size:0.75rem;
+    padding:0.25rem 0.6rem; cursor:pointer; margin-top:0.2rem;
+  }
+  .print-pg-btn:hover { border-color:var(--accent); color:var(--accent); }
 </style>
 </head>
 <body>
@@ -1070,28 +993,20 @@
     <div class="no-results" id="no-results">No results found</div>
 
     <div class="sidebar-section">
-      <div class="sidebar-label" data-i18n="sidebar.workflow">Workflow</div>
-      <div class="sidebar-item" onclick="showView('checklist')" data-search="checklist scan sop">
-        <div class="sidebar-item-left"><span class="sidebar-icon">✅</span> Scan Checklist</div><button class="fav-btn" onclick="toggleFav(event,'checklist')" id="fav-checklist" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('wizard')" data-search="wizard machine selector">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🧭</span> Machine Wizard</div>
-      </div>
-    </div>
-
-    <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.nav">Navigation</div>
       <div class="sidebar-item active" onclick="showView('chat')" data-search="ai assistant chat">
         <div class="sidebar-item-left"><span class="sidebar-icon">💬</span> <span data-i18n-text="nav.assistant">AI Assistant</span></div>
       </div>
-      <div class="sidebar-item" onclick="showView('foreword')" data-search="foreword welcome intro">
+      <div class="sidebar-item" onclick="showView('wizard')" data-search="wizard machine selector which machine">
+        <div class="sidebar-item-left"><span class="sidebar-icon">🧭</span> <span data-i18n-text="nav.wizard">Machine Wizard</span></div>
+      </div>
+      <div class="sidebar-item" onclick="showView('foreword')" data-search="foreword welcome handbook intro">
         <div class="sidebar-item-left"><span class="sidebar-icon">📖</span> <span data-i18n-text="nav.foreword">Foreword</span></div>
       </div>
-      <div class="sidebar-item" onclick="showView('filmid')" data-search="identify film type 8mm">
+      <div class="sidebar-item" onclick="showView('filmid')" data-search="identify film type format visual guide 8mm">
         <div class="sidebar-item-left"><span class="sidebar-icon">🔍</span> <span data-i18n-text="nav.filmid">Film ID Guide</span></div>
       </div>
     </div>
-
     <!-- RECENT -->
     <div class="sidebar-section" id="recent-section" style="display:none;">
       <div class="sidebar-label">Recently Viewed</div>
@@ -1102,71 +1017,73 @@
       <div class="sidebar-label">Favourites ⭐</div>
       <div id="fav-list"></div>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.machines">Machines</div>
-      <div class="sidebar-item" onclick="showView('mmt')" data-search="mmt scanner threading gate sprocket">
+      <div class="sidebar-item" onclick="showView('mmt')" onclick="showView('mmt')" data-search="mmt scanner threading gate sprocket software">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎞️</span> MMT Scanner</div><button class="fav-btn" onclick="toggleFav(event,'mmt')" id="fav-mmt" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('retroscan')" data-search="retroscan movistuff lightpin forward export">
+      <div class="sidebar-item" onclick="showView('retroscan')" onclick="showView('retroscan')" data-search="retroscan movistuff hardware lightpin forward export overnight">
         <div class="sidebar-item-left"><span class="sidebar-icon">📽️</span> RetroScan (Movistuff)</div><button class="fav-btn" onclick="toggleFav(event,'retroscan')" id="fav-retroscan" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('fd')" data-search="film digital fd1 fd2 ghost frames">
+      <div class="sidebar-item" onclick="showView('fd')" onclick="showView('fd')" data-search="film digital fd fd1 fd2 ghost frames speed c3">
         <div class="sidebar-item-left"><span class="sidebar-icon">⚡</span> Film-Digital (FD)</div><button class="fav-btn" onclick="toggleFav(event,'fd')" id="fav-fd" title="Favourite">☆</button>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.filmtypes">Film Types</div>
-      <div class="sidebar-item" onclick="showView('super8')" data-search="super 8 kodak 1965 cartridge sound">
+      <div class="sidebar-item" onclick="showView('super8')" onclick="showView('super8')" data-search="super 8 kodak 1965 cartridge sound silent">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> Super 8</div><button class="fav-btn" onclick="toggleFav(event,'super8')" id="fav-super8" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('regular8')" data-search="regular 8 standard 1930s silent">
+      <div class="sidebar-item" onclick="showView('regular8')" onclick="showView('regular8')" data-search="regular 8 standard 8 1930s silent">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> Regular 8 / Standard 8</div><button class="fav-btn" onclick="toggleFav(event,'regular8')" id="fav-regular8" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('9.5mm')" data-search="9.5mm pathe central perforation">
+      <div class="sidebar-item" onclick="showView('9.5mm')" onclick="showView('9.5mm')" data-search="9.5mm pathe pathé baby central perforation">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 9.5mm Pathé</div><button class="fav-btn" onclick="toggleFav(event,'9.5mm')" id="fav-9.5mm" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('16mm')" data-search="16mm eastman kodak documentary optical magnetic">
+      <div class="sidebar-item" onclick="showView('16mm')" onclick="showView('16mm')" data-search="16mm eastman kodak documentary optical magnetic">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 16mm</div><button class="fav-btn" onclick="toggleFav(event,'16mm')" id="fav-16mm" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('35mm')" data-search="35mm cinema nitrate cinemascope">
+      <div class="sidebar-item" onclick="showView('35mm')" onclick="showView('35mm')" data-search="35mm cinema professional nitrate cinemascope">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 35mm</div><button class="fav-btn" onclick="toggleFav(event,'35mm')" id="fav-35mm" title="Favourite">☆</button>
       </div>
     </div>
-
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i18n="sidebar.special">Special Cases</div>
+      <div class="sidebar-item" onclick="showView('tenite')" onclick="showView('tenite')" data-search="tenite reel decay bloom plastic spool grey">
+        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> Tenite Reel Decay</div><button class="fav-btn" onclick="toggleFav(event,'tenite')" id="fav-tenite" title="Favourite">☆</button>
+      </div>
+      <div class="sidebar-item" onclick="showView('vinegar')" onclick="showView('vinegar')" data-search="vinegar syndrome acetate smell channeling buckling ppe">
+        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> Vinegar Syndrome</div><button class="fav-btn" onclick="toggleFav(event,'vinegar')" id="fav-vinegar" title="Favourite">☆</button>
+      </div>
+      <div class="sidebar-item" onclick="showView('mould')" onclick="showView('mould')" data-search="mould mold biohazard spores ffp2 ffp3 fuzzy">
+        <div class="sidebar-item-left"><span class="sidebar-icon">🦠</span> Mouldy Film (Biohazard)</div><button class="fav-btn" onclick="toggleFav(event,'mould')" id="fav-mould" title="Favourite">☆</button>
+      </div>
+      <div class="sidebar-item" onclick="showView('water')" onclick="showView('water')" data-search="water damage wet sticky emulsion ferrotype drying">
+        <div class="sidebar-item-left"><span class="sidebar-icon">💧</span> Water Damage</div><button class="fav-btn" onclick="toggleFav(event,'water')" id="fav-water" title="Favourite">☆</button>
+      </div>
+      <div class="sidebar-item" onclick="showView('nitrate')" onclick="showView('nitrate')" data-search="nitrate fire flammable 35mm stages decay">
+        <div class="sidebar-item-left"><span class="sidebar-icon">🔥</span> Nitrate Film</div><button class="fav-btn" onclick="toggleFav(event,'nitrate')" id="fav-nitrate" title="Favourite">☆</button>
+      </div>
+    </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.sound">Sound</div>
-      <div class="sidebar-item" onclick="showView('magnetic')" data-search="magnetic magstripe brown stripe fd1 fd2">
+      <div class="sidebar-item" onclick="showView('magnetic')" onclick="showView('magnetic')" data-search="magnetic sound magstripe brown stripe fd1 fd2 mono stereo full coat">
         <div class="sidebar-item-left"><span class="sidebar-icon">🔊</span> Magnetic Sound</div><button class="fav-btn" onclick="toggleFav(event,'magnetic')" id="fav-magnetic" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('optical')" data-search="optical sound variable area aeolight">
+      <div class="sidebar-item" onclick="showView('optical')" onclick="showView('optical')" data-search="optical sound variable area density aeolight retroscan wavy line">
         <div class="sidebar-item-left"><span class="sidebar-icon">〰️</span> Optical Sound</div><button class="fav-btn" onclick="toggleFav(event,'optical')" id="fav-optical" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('sepmag')" data-search="sepmag separate magnetic full coat">
+      <div class="sidebar-item" onclick="showView('sepmag')" onclick="showView('sepmag')" data-search="sepmag separate magnetic two reels full coat sync">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎙️</span> Sepmag</div><button class="fav-btn" onclick="toggleFav(event,'sepmag')" id="fav-sepmag" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('aeolight')" data-search="aeo light bounding box wav extract">
+      <div class="sidebar-item" onclick="showView('aeolight')" onclick="showView('aeolight')" data-search="aeo light bounding box frame pitch wav extract calibrate">
         <div class="sidebar-item-left"><span class="sidebar-icon">💻</span> AEO-Light</div><button class="fav-btn" onclick="toggleFav(event,'aeolight')" id="fav-aeolight" title="Favourite">☆</button>
       </div>
     </div>
-
     <div class="sidebar-section">
-      <div class="sidebar-label" data-i18n="sidebar.special">Special Cases</div>
-      <div class="sidebar-item" onclick="showView('tenite')" data-search="tenite reel decay bloom spool">
-        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> Tenite Reel Decay</div><button class="fav-btn" onclick="toggleFav(event,'tenite')" id="fav-tenite" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('vinegar')" data-search="vinegar syndrome acetate smell channeling">
-        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> Vinegar Syndrome</div><button class="fav-btn" onclick="toggleFav(event,'vinegar')" id="fav-vinegar" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('mould')" data-search="mould mold biohazard spores ffp2">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🦠</span> Mouldy Film (Biohazard)</div><button class="fav-btn" onclick="toggleFav(event,'mould')" id="fav-mould" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('water')" data-search="water damage wet sticky emulsion">
-        <div class="sidebar-item-left"><span class="sidebar-icon">💧</span> Water Damage</div><button class="fav-btn" onclick="toggleFav(event,'water')" id="fav-water" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('nitrate')" data-search="nitrate fire flammable 35mm stages">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🔥</span> Nitrate Film</div><button class="fav-btn" onclick="toggleFav(event,'nitrate')" id="fav-nitrate" title="Favourite">☆</button>
+      <div class="sidebar-label" data-i18n="sidebar.workflow">Workflow</div>
+      <div class="sidebar-item" onclick="showView('checklist')" onclick="showView('checklist')" data-search="checklist scan sop quick check pre production">
+        <div class="sidebar-item-left"><span class="sidebar-icon">✅</span> <span data-i18n-text="nav.checklist">Scan Checklist</span></div><button class="fav-btn" onclick="toggleFav(event,'checklist')" id="fav-checklist" title="Favourite">☆</button>
       </div>
     </div>
   </aside>
@@ -1226,8 +1143,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-1">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎞️ MMT Scanner</h2>
-        <button class="print-section-btn" onclick="printSection('mmt', 'MMT Scanner')">🖨️ Print this page</button>
+        <h2>🎞️ MMT Scanner</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Developer:</strong> Martin &nbsp;|&nbsp; <strong>Support:</strong> mmtelecine@gmail.com &nbsp;|&nbsp; <strong>Price:</strong> €5,850</p>
 
         <!-- SVG: MMT Threading Diagram -->
@@ -1308,8 +1224,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-2">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>📽️ RetroScan (Movistuff)</h2>
-        <button class="print-section-btn" onclick="printSection('retroscan', 'RetroScan (Movistuff)')">🖨️ Print this page</button>
+        <h2>📽️ RetroScan (Movistuff)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Price:</strong> €11,700 (negligible — manufacturer bankrupt) &nbsp;|&nbsp; <strong>Type:</strong> Workhorse / Universal Machine</p>
 
         <!-- SVG: RetroScan Threading Diagram -->
@@ -1382,8 +1297,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-3">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>⚡ Film-Digital (FD) Units</h2>
-        <button class="print-section-btn" onclick="printSection('fd', 'Film-Digital (FD)')">🖨️ Print this page</button>
+        <h2>⚡ Film-Digital (FD) Units</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Price:</strong> ~€2,340 &nbsp;|&nbsp; <strong>Type:</strong> Fastest Machine / Throughput Focus</p>
         <table>
           <tr><th>Aspect</th><th>Pros</th><th>Cons</th><th>Workflow Impact</th></tr>
@@ -1423,8 +1337,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-4">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 Super 8 Film</h2>
-        <button class="print-section-btn" onclick="printSection('super8', 'Super 8')">🖨️ Print this page</button>
+        <h2>🎬 Super 8 Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced by <strong>Kodak in 1965</strong>. Larger image area than Regular 8, simple cartridge-loading system.</p>
 
         <!-- SVG ILLUSTRATION -->
@@ -1493,8 +1406,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-5">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 Regular 8 / Standard 8</h2>
-        <button class="print-section-btn" onclick="printSection('regular8', 'Regular 8 / Standard 8')">🖨️ Print this page</button>
+        <h2>🎬 Regular 8 / Standard 8</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced in the <strong>1930s</strong> as a compact, affordable alternative to 16mm. Vintage look, popular with collectors and experimental filmmakers.</p>
 
         
@@ -1549,8 +1461,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-6">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 9.5mm Pathé Film</h2>
-        <button class="print-section-btn" onclick="printSection('9.5mm', '9.5mm Pathé')">🖨️ Print this page</button>
+        <h2>🎬 9.5mm Pathé Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced in <strong>1922 by Pathé Frères</strong> as "Pathé Baby". First popular home cinema format in Europe. Unique central perforation between each frame.</p>
 
         
@@ -1600,8 +1511,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-7">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 16mm Film</h2>
-        <button class="print-section-btn" onclick="printSection('16mm', '16mm Film')">🖨️ Print this page</button>
+        <h2>🎬 16mm Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced by <strong>Eastman Kodak in 1923</strong>. Cost-effective alternative to 35mm. Still widely used for documentaries, student films and art projects.</p>
 
         
@@ -1657,8 +1567,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-8">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎬 35mm Film</h2>
-        <button class="print-section-btn" onclick="printSection('35mm', '35mm Film')">🖨️ Print this page</button>
+        <h2>🎬 35mm Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>The gold standard of professional filmmaking. Introduced by <strong>Thomas Edison & William Dickson</strong> in the late 19th century. Still used by Nolan, Tarantino, and PTA today.</p>
 
         
@@ -1709,8 +1618,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-9">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>⚠️ Vinegar Syndrome</h2>
-        <button class="print-section-btn" onclick="printSection('vinegar', 'Vinegar Syndrome')">🖨️ Print this page</button>
+        <h2>⚠️ Vinegar Syndrome</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Chemical deterioration of <strong>cellulose acetate film</strong>. Releases acetic acid — self-accelerating decay process. Highly contagious within archival collections.</p>
 
         
@@ -1777,8 +1685,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-10">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>⚠️ Tenite Reel Decay</h2>
-        <button class="print-section-btn" onclick="printSection('tenite', 'Tenite Reel Decay')">🖨️ Print this page</button>
+        <h2>⚠️ Tenite Reel Decay</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Chemical breakdown of the <strong>plastic spool</strong>, commonly found on grey 50ft 8mm reels. Frequently mistaken for mould — requires different handling.</p>
 
         <!-- SVG: Tenite reel with chalky bloom -->
@@ -1842,8 +1749,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-11">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🦠 Mouldy Film — Biological Hazard</h2>
-        <button class="print-section-btn" onclick="printSection('mould', 'Mouldy Film')">🖨️ Print this page</button>
+        <h2>🦠 Mouldy Film — Biological Hazard</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Mould is a biological growth that thrives on moisture and organic material (like film emulsion). <strong>Health hazard!</strong> Produces spores and mycotoxins that cause respiratory issues and skin irritation.</p>
 
         <!-- SVG: Mouldy film strip -->
@@ -1907,8 +1813,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-12">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>💧 Water Damage</h2>
-        <button class="print-section-btn" onclick="printSection('water', 'Water Damage')">🖨️ Print this page</button>
+        <h2>💧 Water Damage</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Water damage is a severe threat to film integrity. Moisture causes the gelatin emulsion to swell and become tacky. Leads to permanent image loss, physical distortion, and is the primary catalyst for mould growth.</p>
 
         
@@ -1964,8 +1869,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-13">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🔥 Nitrate Film (Hazardous Material)</h2>
-        <button class="print-section-btn" onclick="printSection('nitrate', 'Nitrate Film')">🖨️ Print this page</button>
+        <h2>🔥 Nitrate Film (Hazardous Material)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Cellulose Nitrate was the industry standard until the mid-20th century. <strong>Inherently unstable and highly flammable.</strong> Contains its own oxygen source — once ignited, almost impossible to extinguish. Almost exclusively found in <strong>35mm</strong>.</p>
 
         
@@ -2023,8 +1927,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-14">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🔊 Magnetic Sound (Magstripe)</h2>
-        <button class="print-section-btn" onclick="printSection('magnetic', 'Magnetic Sound')">🖨️ Print this page</button>
+        <h2>🔊 Magnetic Sound (Magstripe)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Think of it as a long piece of <strong>cassette tape glued directly onto the film edge</strong>. The film carries audio right alongside the images.</p>
 
         
@@ -2081,8 +1984,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-15">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>〰️ Optical Sound</h2>
-        <button class="print-section-btn" onclick="printSection('optical', 'Optical Sound')">🖨️ Print this page</button>
+        <h2>〰️ Optical Sound</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Optical sound is like a <strong>"barcode for audio"</strong>. Unlike magnetic sound, it is photographed directly onto the film. The audio is literally part of the image itself.</p>
 
         
@@ -2135,8 +2037,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-16">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>🎙️ Sepmag (Separate Magnetic)</h2>
-        <button class="print-section-btn" onclick="printSection('sepmag', 'Sepmag')">🖨️ Print this page</button>
+        <h2>🎙️ Sepmag (Separate Magnetic)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Picture and sound stored on <strong>two completely separate reels</strong>. No soundtrack on the film strip itself.</p>
 
         
@@ -2177,8 +2078,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-17">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>💻 AEO-Light: Extracting Optical Sound</h2>
-        <button class="print-section-btn" onclick="printSection('aeolight', 'AEO-Light')">🖨️ Print this page</button>
+        <h2>💻 AEO-Light: Extracting Optical Sound</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
 
         <h3>1. Start a Project</h3>
         <p>Open AEO-Light → File &gt; New Project → select your source folder. <em>Note: DPX or TIFF image sequences preferred, but video files are also supported.</em></p>
@@ -2244,8 +2144,7 @@
       <div class="wiki-content">
         <div class="lang-banner" id="lang-banner-18">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
 
-        <h2>✅ Quick-Check: Scan Process (SOP)</h2>
-        <button class="print-section-btn" onclick="printSection('checklist', 'Scan Checklist')">🖨️ Print this page</button>
+        <h2>✅ Quick-Check: Scan Process (SOP)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <button class="print-btn" onclick="window.print()">🖨️ Print Checklist</button>
 
         <h3>1. Pre-Production</h3>
@@ -2308,7 +2207,7 @@
 
     <!-- WIZARD PANEL -->
     <div class="wiki-panel wizard-panel" id="view-wizard">
-      <h2>🧭 Machine Wizard</h2>
+      <h2>🧭 Machine Wizard</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
       <p style="color:var(--text-mid);font-size:0.875rem;margin-bottom:1.5rem;">Answer 3 quick questions to find the right scanner for your film.</p>
 
       <div class="wizard-progress">
@@ -2451,8 +2350,7 @@
     <!-- FILM ID GUIDE PANEL -->
     <div class="wiki-panel" id="view-filmid">
       <div class="filmid-panel">
-        <h2>🔍 Film Identification Guide</h2>
-        <button class="print-section-btn" onclick="printSection('foreword', 'Foreword')">🖨️ Print this page</button>
+        <h2>🔍 Film Identification Guide</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
 
         <div class="filmid-diagram">
           <h3>Step-by-Step: Which film do I have?</h3>
@@ -4556,18 +4454,12 @@ if (!document.getElementById('img-file-input')) {
 }
 
 
-// ===== SECTION PRINT =====
-function printSection(panelId, panelLabel) {
-  const panel = document.getElementById('view-' + panelId);
-  if (!panel) { window.print(); return; }
-  document.querySelectorAll('.wiki-panel').forEach(p => p.classList.remove('active'));
-  panel.classList.add('active');
-  const origTitle = document.title;
-  document.title = 'CineOps — ' + panelLabel;
-  window.print();
-  document.title = origTitle;
-}
 
+window.addEventListener('beforeprint', function() {
+  document.querySelectorAll('.wiki-panel').forEach(p => p.classList.remove('active'));
+  const cur = document.getElementById('view-' + currentView);
+  if (cur) cur.classList.add('active');
+});
 
 // Init
 captureEnContent();
