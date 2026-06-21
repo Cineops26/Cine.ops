@@ -1,114 +1,192 @@
-// ===== 1. DIE OPTIMIERTE VIEW-STEUERUNG (Ersetze deine showView Funktion) =====
-function showView(view, pushHistory = true) {
-  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-  const chatArea = document.getElementById('view-chat');
-  const inputArea = document.getElementById('input-area');
-  document.querySelectorAll('.wiki-panel').forEach(p => p.classList.remove('active'));
+<script>
+// ===== (Filmbibel / Wissensbasis) =====
+const FILM_BIBLE = `__unused__
+=== MASCHINEN ===
+MMT SCANNER (High-Quality, €5.850):
+- Entwickler: Martin | Support: mmtelecine@gmail.com
+- Beste Qualität: bis 5,5K Auflösung, volle Farb-/Belichtungskontrolle
+- Langsamster Scanner: 6–15 fps (optimal 10–12 fps)
+- THREADING: Film muss gereinigt/geschmiert werden. Volle Spule LINKS, leere RECHTS. Perforation zeigt zu dir (links). ~0,5m Leader abwickeln → linke Spannungsrollen → Gate öffnen → Perforationen auf Sprockets ausrichten → Film flach, kein Bogen → Gate nur schließen wenn KEIN Widerstand → Sprockets beidseitig befestigen mit leichter SCHLAUFE → rechte Spannungsrollen → Leader in Aufwickelkern → Rechts 2–3 Umdrehungen manuell drehen.
+- SOFTWARE: File > Load Configuration (neueste Datei). Film-Icon oben rechts → Auftragsnummer & Mediennummer → Save. Focus, Auflösung, Format auf Monitor prüfen.
+- SCAN STARTEN: Software: Roter Button oben links. Sofort danach: Hebel an Maschine nach unten in REC-Position. Jog-Funktion testen. Nur starten wenn Film glatt durch Gate läuft.
+- SICHERHEIT: Klicken = falsch ausgerichtete Perforationen → SOFORT STOPPEN! Keine Software-Änderungen ohne Rücksprache!
 
-  if (view === 'chat') {
-    chatArea.classList.remove('hidden');
-    inputArea.style.display = '';
-  } else {
-    chatArea.classList.add('hidden');
-    inputArea.style.display = 'none';
-    
-    const activePanel = document.getElementById('view-' + view);
-    if (activePanel) {
-      activePanel.classList.add('active');
-      
-      // Injeziert den Foto-Manager & Notizen dynamisch, passend zum aktuellen Thema (pid)
-      injectInteractiveWidgets(activePanel, view);
-      
-      // Lädt die spezifischen Fotos und Notizen für genau dieses Thema
-      renderImgGrid(view); 
-      loadNoteForView(view);
-    }
-  }
+RETROSCAN UNIVERSAL (Workhorse, €11.700 - Hersteller insolvent):
+- Sprocket-LOSER Transport: sehr schonend für alten/beschädigten Film
+- Max 15 fps | Sicherste Maschine für Azubis
+- HARDWARE: Roten Knopf vorne → EIN. Volle Spule links, schwarze Mutter NUR HANDFEST (nicht überziehen!). Film ÜBER erste große Rolle → UNTER schwarze Tänzerrolle → ins Filmgate → UNTER nächste kleine Rolle → ÜBER letzte Rolle rechts. ACHTUNG: Perforation zeigt ZUR MASCHINE (nach hinten/innen)! Lightpin (roter Laser) exakt auf Perforation ausrichten. Film auf rechte Aufwickelspule befestigen.
+- SOFTWARE: Neues Album erstellen → Albumtitel: Auftragsnummer → Export Drive D: → OK. Preview starten → Ausrichtung prüfen → zurückspulen → Preview schließen.
+- SCAN: Software START (unten Mitte) → Maschine auf FORWARD. NUR in dieser Reihenfolge!
+- EXPORT: NUR am Ende der Schicht (Overnight)! Kein Parallelbetrieb! View-Tab → Export. Auftragsnummer (blau) anklicken → alle Clips. Einstellungen: typisch 1080p, 4:3, 18fps. Rechtsklick auf Wert → auf alle anwenden.
 
-  document.querySelectorAll('.sidebar-item').forEach(item => {
-    if ((item.getAttribute('onclick') || '').includes("'" + view + "'")) item.classList.add('active');
+FILM-DIGITAL FD (Schnellste, ~€2.340):
+- Geschwindigkeit: 18–24 fps (schnellste Maschine)
+- Sprocket-Transport: hohes Filmriss-Risiko! Haare/Staub leicht im Gate.
+- NUR für C3-Rollen! Ghost-Frames-Problem bestätigt.
+- EINZIGE Maschine für Magnetton: FD2 = Super 8, FD1 = Regular 8 (Coming Soon)
+- Filme vor Scan reinigen!
+
+=== FILMTYPEN ===
+SUPER 8 (Kodak 1965):
+- Breite: 8mm | Auflösung: ca. 1,5K–2K | Aspekt: 1.33:1
+- Ton: stumm oder magnetisch/optisch
+- Scanner: Film-Digital (Ton+Bild), MMT (nur stumm), RetroScan (nur stumm)
+- WICHTIG: Nur Film-Digital kann Soundtrack aufnehmen! FD2 für Super 8 Magnetton.
+- Lagerung: 10–15°C, 40–50% Luftfeuchtigkeit, kühl/trocken/dunkel
+
+REGULAR 8 / STANDARD 8 (1930er):
+- Breite: 8mm | Auflösung: ca. 1K–1,5K
+- MEIST stumm! Seltene Tonoption existiert.
+- Scanner: Film-Digital (Ton), MMT (stumm), RetroScan (stumm)
+- FD1 für Regular 8 Magnetton (Coming Soon)
+
+9,5mm PATHÉ (Pathé Frères, 1922):
+- Breite: 9,5mm | Einzigartig: ZENTRALE Einzelperforation zwischen Frames
+- Auflösung: ca. 1,5K–2K
+- Scanner: MMT, RetroScan (NICHT Film-Digital!)
+- SEHR VORSICHTIG: zentrale Perforation reißleicht! Baumwollhandschuhe!
+
+16mm (Eastman Kodak, 1923):
+- Breite: 16mm | Auflösung: ca. 2K–3K
+- Ton: stumm, optisch oder magnetisch
+- Scanner: Film-Digital (alle Tontypen), MMT (stumm), RetroScan (stumm)
+- AEO-Light: Bei 16mm Ton 26 Frames vor Bild → Offset in AEO-Light eintragen
+
+35mm (Edison/Dickson, 19. Jhdt.):
+- Breite: 35mm | Auflösung: ca. 4K–6K | 4 Perforationen pro Frame
+- Scanner: NUR RetroScan!
+- Immer auf Nitrat prüfen! "NITRATE"-Aufdruck am Filmrand?
+
+=== SONDERFÄLLE ===
+VINEGAR SYNDROME:
+- Chemischer Zerfall von Celluloseacetat. Selbst-beschleunigend. Hochgradig ansteckend!
+- Symptome: Essig-Geruch, Schrumpfung/Wellen/Wölbung, Sprödigkeit, weiße Kristalle, "Channeling"
+- PPE: Nitrilhandschuhe, Maske mit organischen Dampffiltern, Schutzbrille, Lüftung PFLICHT!
+- Dosen von sich weg öffnen (Dampfstoß!)
+- SCAN: NUR Retroscan Universal Mark II 4K! "Scan Slow" aktivieren! Blende mind. F5.6! Empfehlung: 2K scannen. Nach Scan: GESAMTE Maschine extrem gründlich reinigen!
+- Stop-Regel: Film reißt ständig → SOFORT STOPPEN!
+- Isolierung: Von gesunden Filmen trennen! A-D Strips zur Säuremessung. Als "Vinegar Syndrome" kennzeichnen.
+- Lagerung: unter 18°C, 30–50% Luftfeuchtigkeit. Fortgeschritten: Kühllagerung.
+
+TENITE REEL DECAY:
+- Zerfall der Kunststoffspule (graue 50ft 8mm Spulen). KEIN Schimmel!
+- Aussehen: pudrig/wachsartig/kreidig. Kristallin – im Gegensatz zu faserigem Schimmel.
+- Bleibt meist auf Spule begrenzt (breitet sich nicht aus wie Lebewesen).
+- Symptome: Essig- oder ranziger Buttergeruch, kreidige Oberfläche.
+- PPE: Nitrilhandschuhe, P2/FFP2 Maske
+- Reinigung: Trockene Bürste/Tuch. KEINE Lösungsmittel!
+- Filmmaterial meist unbeeinträchtigt – nach Reinigung der Spule normal scannen.
+
+SCHIMMEL (Biologischer Gefahrstoff):
+- Biologisches Wachstum auf Feuchtigkeit und organischem Material. GESUNDHEITSGEFAHR!
+- Identifikation: Fusselartige/fleckige/fadenartige Strukturen. Farben: weiß/grau/grün/schwarz. Muffiger/erdiger Geruch.
+- Unterschied zu Tenite: Schimmel organisch/faserig; Tenite kreidig/auf Spule begrenzt.
+- PPE: FFP2/FFP3 Maske PFLICHT! Nitrilhandschuhe, Schutzbrille, Einweg-Laborkittel.
+- Isolierung! Als "SCHIMMEL / BIOHAZARD" kennzeichnen.
+- KEIN MASCHINENDURCHLAUF! Sporen kontaminieren gesamten Scannerweg!
+- Reinigung: Sanfter Pinsel, HEPA-Staubsauger, KEINE Flüssigkeiten!
+
+WASSERSCHADEN:
+- Emulsion wird weich und klebrig. Kann zu Schimmelwachstum führen.
+- Aussehen: Tide-Linien, marmorartige Muster, weiche/klebrige Emulsion.
+- NIEMALS gewaltsam abrollen! NICHT reiben/Druck ausüben – Bild wird abgewischt!
+- Trocknung: Lufttrocknung, KEIN Föhn/Heizung. Vorsichtig abspulen auf sauberer Fläche.
+- Scan: Erst auf klebrige Stellen prüfen. Schichten verschmolzen → NICHT scannen! Minimale Spannung beim Scan.
+
+NITRATFILM (Hochgradig gefährlich, fast nur 35mm):
+- Inhärent instabil und hochentzündlich. Enthält eigene Sauerstoffquelle!
+- Stadien: 1=bernstein/Geruch (stabil) → 2=klebrig (hohes Bildverlustrisiko) → 3=pulverig/rostig (ENTFLAMMBAR) → 4=terminal (EXTREM GEFÄHRLICH)
+- Identifikation: Bräunlicher Schimmer, Buckeln, weiße Kristalle, scharfer "chemischer" Geruch. Wort "NITRATE" am Filmrand (aber Fehlen ≠ sicher!).
+- Auto-Entzündung ab 38°C oder durch Reibung möglich! Letale Gase beim Brennen!
+- Handhabung: Handschuhe+Maske! Lagerung unter 5°C! Nur in Nitrat-Schränken lagern!
+- NIEMALS Stadium 2 oder 3 scannen! Scanner muss LED-Licht haben (kein Wärmestau). Fluchtweg + speziellen Feuerlöscher kennen VOR Scan-Beginn!
+`;
+
+// ===== STATE =====
+let chatHistory = [];
+let isLoading = false;
+let currentView = 'chat';
+let currentLang = 'en';
+let viewHistory = ['chat'];
+
+// ===== UNLIMITED IMAGE STORAGE (IndexedDB Architecture) =====
+let db = null;
+function initIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('CineOpsDB', 1);
+    request.onupgradeneeded = (e) => {
+      let database = e.target.result;
+      if (!database.objectStoreNames.contains('gallery')) {
+        database.createObjectStore('gallery', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+    request.onsuccess = (e) => { db = e.target.result; resolve(); };
+    request.onerror = (e) => { console.error('IndexedDB Error', e); reject(e); };
   });
-
-  if (pushHistory && viewHistory[viewHistory.length - 1] !== view) viewHistory.push(view);
-  document.getElementById('back-btn').style.display = (view !== 'chat') ? 'flex' : 'none';
-  addToRecent(view);
-  closeSidebar();
-  currentView = view;
 }
 
-// ===== 2. DYNAMISCHE WIDGET-INJEKTION (Neu hinzufügen) =====
-function injectInteractiveWidgets(container, pid) {
-  const contentDiv = container.querySelector('.wiki-content');
-  if (!contentDiv) return;
-  
-  // Falls der Foto-Manager auf dieser Seite bereits existiert, nichts tun
-  if (contentDiv.querySelector('.img-manager')) return;
-  
-  const widgetsHTML = `
-    <div class="img-manager" id="imgmgr-${pid}">
-      <div class="img-manager-header" onclick="toggleImgMgr('${pid}')">
-        <span>📸 <strong>Fotos</strong> — Bilder für dieses Thema verwalten</span>
-        <span id="imgmgr-count-${pid}" style="color:var(--text-dim);font-size:0.7rem;">Keine Fotos</span>
-      </div>
-      <div class="img-manager-body" id="imgmgr-body-${pid}">
-        <div class="img-drop-zone" id="imgdrop-${pid}" onclick="triggerCineFileUpload('${pid}')" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleImgDrop(event,'${pid}')">
-          <div class="drop-icon">📷</div>
-          <p>Klicken oder Bilder per Drag & Drop hierhin ziehen</p>
-          <p style="font-size:0.7rem;margin-top:0.2rem;color:var(--text-dim)">JPG, PNG, WEBP — isoliert gespeichert für dieses Thema</p>
-        </div>
-        <div class="img-grid" id="imgrid-${pid}"></div>
-      </div>
-    </div>
-    
-    <div class="page-note" id="note-${pid}">
-      <div class="page-note-header" onclick="toggleNote('${pid}')">
-        <span>📝 Meine Notizen</span>
-        <span style="font-size:0.7rem;" id="note-indicator-${pid}"></span>
-      </div>
-      <textarea class="note-ta" id="note-ta-${pid}" placeholder="Persönliche Notizen für dieses Thema hinzufügen..." oninput="noteChanged('${pid}')"></textarea>
-      <button class="note-save-btn" id="note-save-${pid}" onclick="saveNote('${pid}')">Notiz speichern</button>
-    </div>
-  `;
-  contentDiv.insertAdjacentHTML('beforeend', widgetsHTML);
+function saveImageToDB(pid, fileData, fileName) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['gallery'], 'readwrite');
+    const store = transaction.objectStore('gallery');
+    const record = { pid: pid, src: fileData, name: fileName, timestamp: Date.now() };
+    const req = store.add(record);
+    req.onsuccess = () => resolve();
+    req.onerror = (e) => reject(e);
+  });
 }
 
-// Hilfsfunktion zum Triggern des Uploads mit korrekter Themen-ID
-function triggerCineFileUpload(pid) {
-  const fileInp = document.getElementById('img-file-input');
-  if (fileInp) {
-    fileInp.dataset.panel = pid;
-    fileInp.click();
-  }
+function getImagesFromDB(pid) {
+  return new Promise((resolve) => {
+    const transaction = db.transaction(['gallery'], 'readonly');
+    const store = transaction.objectStore('gallery');
+    const req = store.getAll();
+    req.onsuccess = () => {
+      const filtered = req.result.filter(img => img.pid === pid);
+      resolve(filtered);
+    };
+  });
 }
 
-// Hilfsfunktion zum Laden der Notiz
-function loadNoteForView(pid) {
-  const ta = document.getElementById('note-ta-' + pid);
-  const ind = document.getElementById('note-indicator-' + pid);
-  if (!ta) return;
-  const saved = localStorage.getItem('cineops_note_' + pid) || '';
-  ta.value = saved;
-  if (saved.trim() && ind) ind.textContent = '✓ hat Notiz';
+function deleteImageFromDB(id) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['gallery'], 'readwrite');
+    const store = transaction.objectStore('gallery');
+    const req = store.delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror = (e) => reject(e);
+  });
 }
 
-// ===== 3. GLOBALER FILE-UPLOAD HOOK (Aktualisiere diesen Teil in deinem DOMContentLoaded) =====
-// Ersetze den "Dynamic File Upload Hook" in deinem DOMContentLoaded-Block durch das hier:
-function initFileUploadGlobal() {
-  let fileInp = document.getElementById('img-file-input');
-  if (!fileInp) {
-    fileInp = document.createElement('input');
-    fileInp.type = 'file';
-    fileInp.id = 'img-file-input';
-    fileInp.accept = 'image/*';
-    fileInp.multiple = true;
-    fileInp.style.display = 'none';
-    document.body.appendChild(fileInp);
-  }
-  
-  fileInp.onchange = async function() {
-    const pid = this.dataset.panel;
-    if (!pid) return;
-    for (let f of this.files) { await processAndStoreImage(f, pid); }
-    this.value = ''; // Reset
-  };
-}
+// ===== SMART LOCAL AI ENGINE (Fuzzy / Token-Distance Matching) =====
+const KB = {
+  mmt: {
+    keys: ['mmt','telecine','einfadeln','threading','martin','hebel','rec','sprocket','schlaufe','gate','klicken'],
+    answer: `## 🎞️ MMT Scanner – Komplette Anleitung\n\n**Kontakt:** mmtelecine@gmail.com | Entwickler: Martin\n\n### 🛠️ 1. Vorbereitung\n- Film muss **gereinigt und geschmiert** werden (MMT-Standard!)\n- Führungsspleiß (Leader-Tape) auf Stabilität prüfen\n- Volle Spule auf **linken Spindel**, leere auf **rechten Spindel**\n- Perforation zeigt beim Einlegen links **zu dir**\n\n### 🧵 2. Threading\n1. ca. **0,5m Leader** von der linken Spule abwickeln\n2. Film um die **linken Spannungsrollen** führen (zentriert!)\n3. **Gate öffnen** → Leader einfädeln → Perforationen auf **Sprockets** ausrichten\n4. Film muss absolut **flach** liegen – kein Bogen!\n5. ⚠️ Gate nur schließen wenn **KEIN Widerstand** spürbar\n6. Beidseitig an Sprockets befestigen + **leichte Schlaufe** (Slack) lassen\n7. Durch **rechte Spannungsrollen** → in Aufwickelkern einlegen\n8. Rechts **2–3 Umdrehungen** manuell drehen bis gespannt\n\n### 💻 3. Software-Setup\n- Konfiguration prüfen → falls falsch: **File > Load Configuration** → neueste Datei\n- **Film-Icon** (oben rechts) → Auftragsnummer & Mediennummer → Save\n- Monitor: Focus, Auflösung, Format (Super 8 / Regular 8) prüfen\n\n### 🚀 4. Scan starten\n1. Software: **Roter Button** oben links → Recording starten\n2. Maschine: Sofort danach **Hebel nach unten** in REC-Position\n3. Jog-Funktion: Film ein paar Frames vorwärts testen\n4. Nur starten wenn Film glatt und **zentriert** durch Gate läuft\n\n### ⚠️ Sicherheit\n- **Klicken** = falsch ausgerichtete Perforationen → **SOFORT STOPPEN!**\n- Keine Software-Änderungen ohne Rücksprache!\n- Staub/Haare im Gate nach dem Threading prüfen`
+  },
+  retroscan: {
+    keys: ['retroscan','movistuff','lightpin','tanzer','dancer','mutter','forward','album','preview','export','overnight','insolvent','schonend'],
+    answer: `## 📽️ RetroScan (Movistuff) – Komplette Anleitung\n\n**Typ:** Sprocket-loser Transport – ideal für alten/beschädigten Film\n\n### 🛠️ I. Hardware Setup\n1. **Roten Knopf** vorne drücken → EIN\n2. Volle Spule links → schwarze Mutter **NUR HANDFEST** (nicht überziehen!)\n3. Filmweg: **ÜBER** erste große Rolle → **UNTER** schwarze Tänzerrolle → **ins Gate** → **UNTER** nächste kleine Rolle → **ÜBER** letzte Rolle rechts\n4. ⚠️ **PERFORATION:** Zeigt strikt **zur Maschine (nach innen/hinten)**\n5. **Lightpin** (roter Laser) exakt auf Perforation ausrichten\n6. Film auf rechte Aufwickelspule befestigen\n\n### 💻 II. Software\n- Neues Album → Albumtitel: **Auftragsnummer** (z.B. GB-10073) → Export: **Drive D:** → OK\n- Auftragsnummer in der Liste anklicken\n- **PREVIEW** → Film kurz laufen lassen → Ausrichtung prüfen → zurückspulen → Preview schließen\n\n### 🚀 III. Scan starten\n1. **START** (Software, unten Mitte) klicken\n2. Schalter auf **FORWARD** (Maschine) – NUR nach dem Software-Start!\n\n### 📤 Export\n- ⚠️ **NUR Overnight exportieren** – kein Parallelbetrieb!\n- View-Tab → Export → Auftragsnummer (blau) anklicken\n- Einstellungen: typisch **1080p, 4:3, 18fps**\n- Rechtsklick auf Wert → auf alle Dateien anwenden → **Export**\n\n[📄 Hersteller-Anleitung](https://www.moviestuff.tv/instructions_mark-II_software_4.2.2.pdf)`
+  },
+  fd: {
+    keys: ['film-digital','fd','fd1','fd2','ghost','schnell','durchsatz','c3','speed','geschwindigkeit','obs','magnetton'],
+    answer: `## ⚡ Film-Digital (FD) – Überblick\n\n**Typ:** Schnellste Maschine – Fokus auf Durchsatz\n\n### Stärken & Schwächen\n- ✅ **Schnellste** Maschine: 18–24 fps\n- ✅ Einzige Maschine mit **Magnetton-Fähigkeit**\n- ⚠️ Sprocket-Transport → hohes Filmriss-Risiko\n- ⚠️ Haare/Staub leicht im Gate → Re-Scans nötig\n- ⚠️ **Ghost-Frames** Problem (bestätigt) – siehe Abschnitt 6.2\n\n### Wichtige Regeln\n- **NUR für C3-Rollen** verwenden (strenge Triage!)\n- Filme vor dem Scan **reinigen**\n- **FD2** = Super 8 Magnetton\n- **FD1** = Regular 8 Magnetton (Coming Soon)\n\n### Ton-Workflow\n- Magnetkopf muss korrekt ausgerichtet sein\n- Sound-Köpfe regelmäßig reinigen\n- Bei "Shedding" (brauner Staub) → **SOFORT STOPPEN**`
+  },
+  vinegar: {
+    keys: ['vinegar','essig','saure','acetate','celluloseacetat','buckeln','schrumpf','channeling','kristalle','ansteckend','ppe','maske','f5.6','slow'],
+    answer: `## ⚠️ Vinegar Syndrome\n\nChemischer Zerfall von **Celluloseacetat-Film** – selbst-beschleunigend und hochgradig ansteckend!\n\n### 🚩 Symptome erkennen\n- **Geruch:** Starker Essig-Geruch (verstärkt sich mit Fortschritt)\n- **Verformung:** Schrumpfung, Wellen, Wölbung (Buckling)\n- **Textur:** Sprödigkeit, Film reißt leicht\n- **Visuell:** Weiße Kristalle oder **"Channeling"** (Blasen zwischen Träger und Emulsion)\n\n### 🛡️ PPE – PFLICHT\n- Nitril- oder Vinylhandschuhe\n- Maske mit organischen Dampffiltern (bei starkem Geruch)\n- Schutzbrille\n- Dose **von sich weg öffnen** (Dampfstoß!)\n- Nur in **gut belüfteten Bereichen** arbeiten\n\n### 🖥️ Scan-Protokoll (KRITISCH)\n- ✅ **NUR RetroScan Universal Mark II 4K** verwenden\n- **"Scan Slow"** aktivieren\n- Blende mind. **F5.6** (genug Schärfentiefe für gewölbten Film)\n- Empfehlung: In **2K scannen** (kürzeres Objektiv → mehr Licht)\n- Nach dem Scan: **GESAMTE Maschine extrem gründlich reinigen!**\n- Film reißt ständig? → **SOFORT STOPPEN** – Film ist nicht mehr zu retten`
+  },
+  mould: {
+    keys: ['schimmel','mould','mold','pilz','biohazard','sporen','ffp2','ffp3','muffig','erdig','ansteckend','biologisch'],
+    answer: `## 🦠 Schimmelfilm – Biologischer Gefahrstoff\n\nMould ist eine **Gesundheitsgefahr!** Produziert Sporen und Mykotoxins.\n\n### 🚫 STOPP: Absolutes Maschinenverbot!\n**Schimmelige Filme DÜRFEN NICHT durch Scanner laufen!**\nDie Sporen setzen sich im gesamten Filmweg, auf den Rollen und der Optik fest. Dadurch wird jeder nachfolgende Kundenfilm kontaminiert.\n\n### 🛡️ Schutzmaßnahmen & PSA\n- **Atemwege:** FFP2 oder FFP3 Atemschutzmaske ist Pflicht!\n- **Hände & Augen:** Nitrilhandschuhe und dichte Schutzbrille.\n- **Kleidung:** Einweg-Laborkittel verwenden.\n- **Quarantäne:** Sofort in eine separate Box packen und unübersehbar als **"SCHIMMEL / BIOHAZARD"** beschriften.\n\n### 🧼 Reinigung\n- Nur unter Abzug oder im Freien bearbeiten.\n- Sporen vorsichtig mit einem weichen Pinsel trocken entfernen. **Niemals feucht wischen!** Feuchtigkeit reaktiviert den Schimmel.`
+  },
+  nitrate: {
+    keys: ['nitrat','nitrate','flammbar','feuer','brand','35mm','explosion','explosiv','letale gase','38',' friction'],
+    answer: `## 🔥 Nitrate Film (Gefahrstoff)\n\nCellulose Nitrate ist **inhärent instabil und hochentzündlich!**\n\n### ⚠️ Überlebenswichtige Regeln\n- Can sich ab **38°C** oder durch bloße Reibung selbst entzünden.\n- Verbrennt explosionsartig und benötigt keinen externen Sauerstoff. Löschen unmöglich!\n- Erzeugt beim Abbrand **hochgiftige, tödliche Gase** (Stickoxide).\n\n### 🔍 Erkennung & Protokoll\n- Achte auf die Aufschrift **"NITRATE"** am Filmrand.\n- Wenn der Film klebrig (Stufe 2) oder bereits pulverförmig (Stufe 3) ist: **FINGER WEG, Dose sofort schließen!**\n- Scannen ist **nur im absolut stabilen Zustand (Stufe 1)** auf Scannern mit kalter LED-Lichtquelle erlaubt.\n- **Vor jedem Scan:** Informiere zwingend die Abteilungsleitung und vergewissere dich, wo der nächste Spezialfeuerlöscher und Fluchtweg sind.`
+  },
+  super8: { keys: ['super 8','super8','s8','kodak 1965','kartusche','cartridge'], answer: `## 🎬 Super 8 Film\nIntroduziert von Kodak 1965. Kleine quadratische Perforation, großer Bildbereich. Wird auf FD2 (mit Ton) oder MMT/RetroScan (stumm) verarbeitet.` },
+  regular8: { keys: ['regular 8','regular8','standard 8','r8','normal 8','1930'], answer: `## 🎬 Regular 8 / Standard 8\nAus den 1930er Jahren. Große Perforationen. Fast immer stumm. Magnetton-Digitalisierung via FD1 (Coming Soon).` },
+  mm9: { keys: ['9,5','9.5','pathe','pathe baby','central','zentralperforation'], answer: `## 🎬 9,5mm Pathé Film\n1922 eingeführt. Zentrale Perforation genau in der Mitte zwischen den Bildern. Extrem reißanfällig! Nur auf MMT oder RetroScan scannen.` },
+  mm16: { keys: ['16mm','16 mm','kodak 1923','doku','aeo-light','26 frames'], answer: `## 🎬 16mm Film\n1923 eingeführt. Eine Perforation pro Frame an der Kante. Optischer Ton liegt immer exakt **26 Frames vor dem Bild** (Offset in AEO-Light!).` },
+  mm35: { keys: ['35mm','35 mm','kinofilm','hollywood','cinemascope','4 perforationen'], answer: `## 🎬 35mm Film\nKino-Goldstandard. 4 Perforationen pro Frame auf beiden Seiten. Kann bei uns **NUR auf dem RetroScan** verarbeitet werden.` },
+  magnetton: { keys: ['magnetton','magstripe','magnetisch','brauner streifen','full coat','sound head','shedding'], answer: `## 🔊 Magnetic Sound (Magstripe)\nBrauner Magnetstreifen am Rand. FD2 liest
