@@ -949,7 +949,6 @@
   }
 
   @media (max-width: 768px) {
-    /* hide sidebar by default, slide in from left */
     .sidebar {
       position: fixed;
       left: -280px;
@@ -963,9 +962,39 @@
     .sidebar.open { left: 0; }
     .hamburger-btn { display: flex; }
     .quick-topics { grid-template-columns: 1fr; }
-    .welcome-title { font-size: 2rem; }
-    /* show back button on mobile whenever a panel is active */
+    .welcome-title { font-size: 1.8rem; }
     .back-btn { display: flex; }
+    /* Better touch targets */
+    .sidebar-item { padding: 0.7rem 1.25rem; min-height: 44px; }
+    .quick-card { padding: 0.85rem; }
+    /* Timer on mobile */
+    .timer-fab { bottom: 1rem; right: 1rem; width: 40px; height: 40px; }
+    .timer-widget { bottom: 4.5rem; right: 1rem; min-width: 160px; }
+    /* Tutorial on mobile */
+    .tutorial-box { max-width: 100%; margin: 0.5rem; }
+    .tutorial-body { min-height: 150px; padding: 1rem 1rem 0; }
+    /* Wiki content padding */
+    .wiki-content { padding: 1rem; }
+    .wiki-panel { padding: 0; }
+    .filmid-panel { padding: 1rem; }
+    .wizard-panel { padding: 1rem; }
+    .foreword-panel { padding: 1.5rem 1rem; }
+    /* Tables scroll on mobile */
+    .wiki-content table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    /* Input area */
+    .input-area { padding: 0.75rem 1rem; }
+    /* Header logo smaller */
+    .logo { font-size: 1.4rem; }
+    /* Hide version on very small screens */
+    .logo + span { display: none; }
+    /* Wizard options single column */
+    .wizard-options { grid-template-columns: 1fr; }
+    /* QR grid single column */
+    .qr-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    /* Lang dropdown position */
+    .lang-dropdown { right: 0.5rem; }
+    /* Daily tip hidden on mobile to save space */
+    #daily-tip-bar { display: none; }
   }
 
   @media print {
@@ -992,6 +1021,20 @@
     padding:0.25rem 0.6rem; cursor:pointer; margin-top:0.2rem;
   }
   .print-pg-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+  /* TUTORIAL OVERLAY — hidden by default */
+  .tutorial-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .tutorial-overlay.visible { display: flex; }
+
 </style>
 </head>
 <body>
@@ -1000,9 +1043,10 @@
   <button class="hamburger-btn" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
-  <a class="logo" href="#">CINEOPS <span>// Film Dept.</span></a>
+  <a class="logo" href="#">CINEOPS <span>// Film Dept.</span></a><span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);margin-left:0.5rem;align-self:center;">v1.0</span>
   <div class="film-strip"></div>
   <button class="notif-bell" id="notif-bell" onclick="showNotifPanel()" title="Updates"><span>🔔</span><span class="notif-badge" id="notif-badge"></span></button>
+  <button class="tutorial-fab-btn" onclick="startTutorial()">🎓 Tutorial</button>
   <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
   <div class="status-dot"></div>
   <button class="lang-btn" onclick="toggleLangDropdown()" id="lang-btn">
@@ -1010,6 +1054,7 @@
     <span id="lang-label">EN</span>
   </button>
 </header>
+<div class="offline-banner" id="offline-banner">⚠️ You are offline — CineOps is running from cache</div>
 <!-- Sidebar overlay (mobile) -->
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 <div class="pwa-banner" id="pwa-banner"><span>📱</span><span>Add CineOps to your home screen for quick access — tap <strong>Share → Add to Home Screen</strong> (iOS) or use the browser menu (Android).</span><button onclick="dismissPwa()">Got it</button><button class="pwa-dismiss" onclick="dismissPwa()">✕</button></div>
@@ -1032,7 +1077,7 @@
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.nav">Navigation</div>
       <div class="sidebar-item active" onclick="showView('chat')" data-search="ai assistant chat">
-        <div class="sidebar-item-left"><span class="sidebar-icon">💬</span> <span data-i18n-text="nav.assistant">AI Assistant</span></div>
+        <div class="sidebar-item-left"><span class="sidebar-icon">💬</span> <span data-i18n-text="nav.assistant">Assistant</span></div>
       </div>
       <div class="sidebar-item" onclick="showView('wizard')" data-search="wizard machine selector which machine">
         <div class="sidebar-item-left"><span class="sidebar-icon">🧭</span> <span data-i18n-text="nav.wizard">Machine Wizard</span></div>
@@ -1045,6 +1090,12 @@
       </div>
       <div class="sidebar-item" onclick="showView('sheets')" data-search="sheets google spreadsheet links">
         <div class="sidebar-item-left"><span class="sidebar-icon">📊</span> Sheets</div>
+      </div>
+      <div class="sidebar-item" onclick="showView('hausregeln')" data-search="hausregeln rules department conduct">
+        <div class="sidebar-item-left"><span class="sidebar-icon">📋</span> Dept. Rules</div>
+      </div>
+      <div class="sidebar-item" onclick="showView('qrcode')" data-search="qr code generator print machine link">
+        <div class="sidebar-item-left"><span class="sidebar-icon">📱</span> QR Codes</div>
       </div>
     </div>
     <!-- RECENT -->
@@ -1059,70 +1110,70 @@
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.machines">Machines</div>
-      <div class="sidebar-item" onclick="showView('mmt')" onclick="showView('mmt')" data-search="mmt scanner threading gate sprocket software">
+      <div class="sidebar-item" onclick="showView('mmt')"  data-search="mmt scanner threading gate sprocket software">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎞️</span> MMT Scanner</div><button class="fav-btn" onclick="toggleFav(event,'mmt')" id="fav-mmt" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('retroscan')" onclick="showView('retroscan')" data-search="retroscan movistuff hardware lightpin forward export overnight">
+      <div class="sidebar-item" onclick="showView('retroscan')"  data-search="retroscan movistuff hardware lightpin forward export overnight">
         <div class="sidebar-item-left"><span class="sidebar-icon">📽️</span> RetroScan (Movistuff)</div><button class="fav-btn" onclick="toggleFav(event,'retroscan')" id="fav-retroscan" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('fd')" onclick="showView('fd')" data-search="film digital fd fd1 fd2 ghost frames speed c3">
+      <div class="sidebar-item" onclick="showView('fd')"  data-search="film digital fd fd1 fd2 ghost frames speed c3">
         <div class="sidebar-item-left"><span class="sidebar-icon">⚡</span> Film-Digital (FD)</div><button class="fav-btn" onclick="toggleFav(event,'fd')" id="fav-fd" title="Favourite">☆</button>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.filmtypes">Film Types</div>
-      <div class="sidebar-item" onclick="showView('super8')" onclick="showView('super8')" data-search="super 8 kodak 1965 cartridge sound silent">
+      <div class="sidebar-item" onclick="showView('super8')"  data-search="super 8 kodak 1965 cartridge sound silent">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> Super 8</div><button class="fav-btn" onclick="toggleFav(event,'super8')" id="fav-super8" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('regular8')" onclick="showView('regular8')" data-search="regular 8 standard 8 1930s silent">
+      <div class="sidebar-item" onclick="showView('regular8')"  data-search="regular 8 standard 8 1930s silent">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> Regular 8 / Standard 8</div><button class="fav-btn" onclick="toggleFav(event,'regular8')" id="fav-regular8" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('9.5mm')" onclick="showView('9.5mm')" data-search="9.5mm pathe pathé baby central perforation">
+      <div class="sidebar-item" onclick="showView('9.5mm')"  data-search="9.5mm pathe pathé baby central perforation">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 9.5mm Pathé</div><button class="fav-btn" onclick="toggleFav(event,'9.5mm')" id="fav-9.5mm" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('16mm')" onclick="showView('16mm')" data-search="16mm eastman kodak documentary optical magnetic">
+      <div class="sidebar-item" onclick="showView('16mm')"  data-search="16mm eastman kodak documentary optical magnetic">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 16mm</div><button class="fav-btn" onclick="toggleFav(event,'16mm')" id="fav-16mm" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('35mm')" onclick="showView('35mm')" data-search="35mm cinema professional nitrate cinemascope">
+      <div class="sidebar-item" onclick="showView('35mm')"  data-search="35mm cinema professional nitrate cinemascope">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 35mm</div><button class="fav-btn" onclick="toggleFav(event,'35mm')" id="fav-35mm" title="Favourite">☆</button>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.special">Special Cases</div>
-      <div class="sidebar-item" onclick="showView('tenite')" onclick="showView('tenite')" data-search="tenite reel decay bloom plastic spool grey">
+      <div class="sidebar-item" onclick="showView('tenite')"  data-search="tenite reel decay bloom plastic spool grey">
         <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> Tenite Reel Decay</div><button class="fav-btn" onclick="toggleFav(event,'tenite')" id="fav-tenite" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('vinegar')" onclick="showView('vinegar')" data-search="vinegar syndrome acetate smell channeling buckling ppe">
+      <div class="sidebar-item" onclick="showView('vinegar')"  data-search="vinegar syndrome acetate smell channeling buckling ppe">
         <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> Vinegar Syndrome</div><button class="fav-btn" onclick="toggleFav(event,'vinegar')" id="fav-vinegar" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('mould')" onclick="showView('mould')" data-search="mould mold biohazard spores ffp2 ffp3 fuzzy">
+      <div class="sidebar-item" onclick="showView('mould')"  data-search="mould mold biohazard spores ffp2 ffp3 fuzzy">
         <div class="sidebar-item-left"><span class="sidebar-icon">🦠</span> Mouldy Film (Biohazard)</div><button class="fav-btn" onclick="toggleFav(event,'mould')" id="fav-mould" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('water')" onclick="showView('water')" data-search="water damage wet sticky emulsion ferrotype drying">
+      <div class="sidebar-item" onclick="showView('water')"  data-search="water damage wet sticky emulsion ferrotype drying">
         <div class="sidebar-item-left"><span class="sidebar-icon">💧</span> Water Damage</div><button class="fav-btn" onclick="toggleFav(event,'water')" id="fav-water" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('nitrate')" onclick="showView('nitrate')" data-search="nitrate fire flammable 35mm stages decay">
+      <div class="sidebar-item" onclick="showView('nitrate')"  data-search="nitrate fire flammable 35mm stages decay">
         <div class="sidebar-item-left"><span class="sidebar-icon">🔥</span> Nitrate Film</div><button class="fav-btn" onclick="toggleFav(event,'nitrate')" id="fav-nitrate" title="Favourite">☆</button>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.sound">Sound</div>
-      <div class="sidebar-item" onclick="showView('magnetic')" onclick="showView('magnetic')" data-search="magnetic sound magstripe brown stripe fd1 fd2 mono stereo full coat">
+      <div class="sidebar-item" onclick="showView('magnetic')"  data-search="magnetic sound magstripe brown stripe fd1 fd2 mono stereo full coat">
         <div class="sidebar-item-left"><span class="sidebar-icon">🔊</span> Magnetic Sound</div><button class="fav-btn" onclick="toggleFav(event,'magnetic')" id="fav-magnetic" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('optical')" onclick="showView('optical')" data-search="optical sound variable area density aeolight retroscan wavy line">
+      <div class="sidebar-item" onclick="showView('optical')"  data-search="optical sound variable area density aeolight retroscan wavy line">
         <div class="sidebar-item-left"><span class="sidebar-icon">〰️</span> Optical Sound</div><button class="fav-btn" onclick="toggleFav(event,'optical')" id="fav-optical" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('sepmag')" onclick="showView('sepmag')" data-search="sepmag separate magnetic two reels full coat sync">
+      <div class="sidebar-item" onclick="showView('sepmag')"  data-search="sepmag separate magnetic two reels full coat sync">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎙️</span> Sepmag</div><button class="fav-btn" onclick="toggleFav(event,'sepmag')" id="fav-sepmag" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('aeolight')" onclick="showView('aeolight')" data-search="aeo light bounding box frame pitch wav extract calibrate">
+      <div class="sidebar-item" onclick="showView('aeolight')"  data-search="aeo light bounding box frame pitch wav extract calibrate">
         <div class="sidebar-item-left"><span class="sidebar-icon">💻</span> AEO-Light</div><button class="fav-btn" onclick="toggleFav(event,'aeolight')" id="fav-aeolight" title="Favourite">☆</button>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.workflow">Workflow</div>
-      <div class="sidebar-item" onclick="showView('checklist')" onclick="showView('checklist')" data-search="checklist scan sop quick check pre production">
+      <div class="sidebar-item" onclick="showView('checklist')"  data-search="checklist scan sop quick check pre production">
         <div class="sidebar-item-left"><span class="sidebar-icon">✅</span> <span data-i18n-text="nav.checklist">Scan Checklist</span></div><button class="fav-btn" onclick="toggleFav(event,'checklist')" id="fav-checklist" title="Favourite">☆</button>
       </div>
     </div>
@@ -1140,7 +1191,7 @@
       <div class="welcome">
         <div class="welcome-title" id="welcome-title">🎬 Film Assistant</div>
         <div class="welcome-sub" id="welcome-sub">
-          Your AI handbook for all questions about film scanners, film types and special cases.<br>
+          Your handbook for all questions about film scanners, film types and special cases.<br>
           Ask anything — in any language.
         </div>
         <div class="quick-topics">
@@ -1181,7 +1232,7 @@
     <!-- WIKI PANELS -->
     <div class="wiki-panel" id="view-mmt">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-1">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-1">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🎞️ MMT Scanner</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Developer:</strong> Martin &nbsp;|&nbsp; <strong>Support:</strong> mmtelecine@gmail.com &nbsp;|&nbsp; <strong>Price:</strong> €5,850</p>
@@ -1262,7 +1313,7 @@
 
     <div class="wiki-panel" id="view-retroscan">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-2">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-2">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>📽️ RetroScan (Movistuff)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Price:</strong> €11,700 (negligible — manufacturer bankrupt) &nbsp;|&nbsp; <strong>Type:</strong> Workhorse / Universal Machine</p>
@@ -1335,7 +1386,7 @@
 
     <div class="wiki-panel" id="view-fd">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-3">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-3">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>⚡ Film-Digital (FD) Units</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p><strong>Price:</strong> ~€2,340 &nbsp;|&nbsp; <strong>Type:</strong> Fastest Machine / Throughput Focus</p>
@@ -1375,7 +1426,7 @@
 
     <div class="wiki-panel" id="view-super8">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-4">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-4">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🎬 Super 8 Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced by <strong>Kodak in 1965</strong>. Larger image area than Regular 8, simple cartridge-loading system.</p>
@@ -1444,7 +1495,7 @@
 
     <div class="wiki-panel" id="view-regular8">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-5">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-5">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🎬 Regular 8 / Standard 8</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced in the <strong>1930s</strong> as a compact, affordable alternative to 16mm. Vintage look, popular with collectors and experimental filmmakers.</p>
@@ -1499,7 +1550,7 @@
 
     <div class="wiki-panel" id="view-9.5mm">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-6">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-6">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🎬 9.5mm Pathé Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced in <strong>1922 by Pathé Frères</strong> as "Pathé Baby". First popular home cinema format in Europe. Unique central perforation between each frame.</p>
@@ -1549,7 +1600,7 @@
 
     <div class="wiki-panel" id="view-16mm">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-7">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-7">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🎬 16mm Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Introduced by <strong>Eastman Kodak in 1923</strong>. Cost-effective alternative to 35mm. Still widely used for documentaries, student films and art projects.</p>
@@ -1605,7 +1656,7 @@
 
     <div class="wiki-panel" id="view-35mm">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-8">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-8">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🎬 35mm Film</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>The gold standard of professional filmmaking. Introduced by <strong>Thomas Edison & William Dickson</strong> in the late 19th century. Still used by Nolan, Tarantino, and PTA today.</p>
@@ -1656,7 +1707,7 @@
 
     <div class="wiki-panel" id="view-vinegar">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-9">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-9">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>⚠️ Vinegar Syndrome</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Chemical deterioration of <strong>cellulose acetate film</strong>. Releases acetic acid — self-accelerating decay process. Highly contagious within archival collections.</p>
@@ -1723,7 +1774,7 @@
 
     <div class="wiki-panel" id="view-tenite">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-10">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-10">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>⚠️ Tenite Reel Decay</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Chemical breakdown of the <strong>plastic spool</strong>, commonly found on grey 50ft 8mm reels. Frequently mistaken for mould — requires different handling.</p>
@@ -1787,7 +1838,7 @@
 
     <div class="wiki-panel" id="view-mould">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-11">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-11">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🦠 Mouldy Film — Biological Hazard</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Mould is a biological growth that thrives on moisture and organic material (like film emulsion). <strong>Health hazard!</strong> Produces spores and mycotoxins that cause respiratory issues and skin irritation.</p>
@@ -1851,7 +1902,7 @@
 
     <div class="wiki-panel" id="view-water">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-12">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-12">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>💧 Water Damage</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Water damage is a severe threat to film integrity. Moisture causes the gelatin emulsion to swell and become tacky. Leads to permanent image loss, physical distortion, and is the primary catalyst for mould growth.</p>
@@ -1907,7 +1958,7 @@
 
     <div class="wiki-panel" id="view-nitrate">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-13">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-13">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🔥 Nitrate Film (Hazardous Material)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Cellulose Nitrate was the industry standard until the mid-20th century. <strong>Inherently unstable and highly flammable.</strong> Contains its own oxygen source — once ignited, almost impossible to extinguish. Almost exclusively found in <strong>35mm</strong>.</p>
@@ -1965,7 +2016,7 @@
 
     <div class="wiki-panel" id="view-magnetic">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-14">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-14">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🔊 Magnetic Sound (Magstripe)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Think of it as a long piece of <strong>cassette tape glued directly onto the film edge</strong>. The film carries audio right alongside the images.</p>
@@ -2022,7 +2073,7 @@
 
     <div class="wiki-panel" id="view-optical">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-15">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-15">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>〰️ Optical Sound</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Optical sound is like a <strong>"barcode for audio"</strong>. Unlike magnetic sound, it is photographed directly onto the film. The audio is literally part of the image itself.</p>
@@ -2075,7 +2126,7 @@
 
     <div class="wiki-panel" id="view-sepmag">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-16">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-16">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>🎙️ Sepmag (Separate Magnetic)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <p>Picture and sound stored on <strong>two completely separate reels</strong>. No soundtrack on the film strip itself.</p>
@@ -2116,7 +2167,7 @@
 
     <div class="wiki-panel" id="view-aeolight">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-17">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-17">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>💻 AEO-Light: Extracting Optical Sound</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
 
@@ -2182,7 +2233,7 @@
 
     <div class="wiki-panel" id="view-checklist">
       <div class="wiki-content">
-        <div class="lang-banner" id="lang-banner-18">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>AI Assistant</strong> to ask questions in your language.</span></div>
+        <div class="lang-banner" id="lang-banner-18">🌐 <span data-i18n="banner.text">Panel content is in English. Use the <strong>Assistant</strong> to ask questions in your language.</span></div>
 
         <h2>✅ Quick-Check: Scan Process (SOP)</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
         <button class="print-btn" onclick="window.print()">🖨️ Print Checklist</button>
@@ -2381,7 +2432,51 @@
       </div>
     </div>
 
-    <!-- FOREWORD PANEL -->
+
+    <!-- QR CODE PANEL -->
+    <div class="wiki-panel" id="view-qrcode">
+      <div class="wiki-content">
+        <h2>📱 QR Code Generator</h2>
+        <button class="print-pg-btn" onclick="window.print()">🖨️ Print QR Codes</button>
+        <p style="color:var(--text-mid);font-size:0.875rem;margin-bottom:1rem;">Generate QR codes for each section. Print and stick them on machines so staff can scan and go directly to the right page.</p>
+
+        <label style="font-size:0.8rem;color:var(--text-mid);display:block;margin-bottom:0.3rem;">Base URL of your CineOps site:</label>
+        <input class="qr-base-url" id="qr-base-url" type="url"
+          value="https://cineops26.github.io/Cine.ops"
+          placeholder="https://cineops26.github.io/Cine.ops"
+          oninput="renderQRCodes()">
+
+        <div class="qr-grid" id="qr-grid"></div>
+      </div>
+    </div>
+
+    <!-- HAUSREGELN PANEL -->
+    <div class="wiki-panel" id="view-hausregeln">
+      <div class="wiki-content">
+        <h2>📋 Cine Dept. House Rules</h2>
+        <button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;margin-top:0.75rem;">
+          <span style="font-size:0.78rem;color:var(--text-dim);align-self:center;">Language:</span>
+          <button onclick="setRulesLang('en')" class="rules-lang-btn active" id="rl-en">🇬🇧 EN</button>
+          <button onclick="setRulesLang('de')" class="rules-lang-btn" id="rl-de">🇩🇪 DE</button>
+          <button onclick="setRulesLang('fr')" class="rules-lang-btn" id="rl-fr">🇫🇷 FR</button>
+          <button onclick="setRulesLang('es')" class="rules-lang-btn" id="rl-es">🇪🇸 ES</button>
+          <button onclick="setRulesLang('pl')" class="rules-lang-btn" id="rl-pl">🇵🇱 PL</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">1</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Treat every order with respect and care" data-de="Jede Bestellung mit Respekt und Sorgfalt behandeln" data-fr="Traitez chaque commande avec respect et soin" data-es="Trata cada pedido con respeto y cuidado" data-pl="Traktuj każde zamówienie z szacunkiem i troską">Treat every order with respect and care</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="Every order contains memories of our customers that cannot be replaced. Handle them accordingly." data-de="Jede Bestellung enthaelt Erinnerungen unserer Kunden die nicht ersetzt werden koennen." data-fr="Chaque commande contient des souvenirs irremplagables de nos clients." data-es="Cada pedido contiene recuerdos irremplazables de nuestros clientes." data-pl="Kazde zamowienie zawiera wspomnienia klientow, ktorych nie mozna zastapic.">Every order contains memories of our customers that cannot be replaced. Handle them accordingly.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">2</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Handle your workspace and machines with care" data-de="Arbeitsplatz und Maschinen sorgfaeltig behandeln" data-fr="Manipulez votre espace de travail et les machines avec soin" data-es="Maneja tu espacio de trabajo y las maquinas con cuidado" data-pl="Obsługuj swoje miejsce pracy i maszyny z troska">Handle your workspace and machines with care</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="Treat the area you work in and the machines you operate with care at all times." data-de="Behandle den Arbeitsbereich und die Maschinen stets mit Sorgfalt." data-fr="Traitez toujours votre espace de travail et les machines avec soin." data-es="Trata siempre tu area de trabajo y las maquinas con cuidado." data-pl="Zawsze traktuj swoje miejsce pracy i maszyny z uwaga.">Treat the area you work in and the machines you operate with care at all times.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">3</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Keep your workspace clean and tidy" data-de="Arbeitsplatz sauber und ordentlich halten" data-fr="Gardez votre espace de travail propre et range" data-es="Manten tu espacio de trabajo limpio y ordenado" data-pl="Utrzymuj swoje miejsce pracy w czystosci i porzadku">Keep your workspace clean and tidy</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="Keep your workstation clean and leave it in an orderly condition for the next person." data-de="Halte deinen Arbeitsplatz sauber und hinterlasse ihn ordentlich fuer die naechste Person." data-fr="Gardez votre poste propre et laissez-le en ordre pour la personne suivante." data-es="Manten tu puesto limpio y dejalo ordenado para la siguiente persona." data-pl="Utrzymuj stanowisko w czystosci i pozostaw je w porzadku dla nastepnej osoby.">Keep your workstation clean and leave it in an orderly condition for the next person.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">4</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Switch off all machines at the end of your shift" data-de="Alle Maschinen am Ende der Schicht ausschalten" data-fr="Eteignez toutes les machines en fin de service" data-es="Apaga todas las maquinas al final de tu turno" data-pl="Wylacz wszystkie maszyny na koniec zmiany">Switch off all machines at the end of your shift</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="Every machine you have worked on must be switched off before you leave." data-de="Jede Maschine an der du gearbeitet hast muss vor dem Gehen ausgeschaltet werden." data-fr="Chaque machine utilisee doit etre eteinte avant de partir." data-es="Cada maquina utilizada debe apagarse antes de salir." data-pl="Kazda uzywana maszyna musi zostac wylaczona przed wyjsciem.">Every machine you have worked on must be switched off before you leave.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">5</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Maintain all sheets and lists as agreed" data-de="Alle Sheets und Listen wie besprochen fuehren" data-fr="Maintenez tous les tableaux et listes comme convenu" data-es="Manten todas las hojas y listas segun lo acordado" data-pl="Prowadz wszystkie arkusze i listy zgodnie z ustaleniami">Maintain all sheets and lists as agreed</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="All sheets and lists must be maintained as discussed and not changed without prior agreement." data-de="Alle Sheets und Listen werden wie besprochen gefuehrt und nicht ohne Absprache veraendert." data-fr="Tous les tableaux doivent etre tenus comme convenu et non modifies sans accord prealable." data-es="Todas las hojas deben mantenerse como se acordo y no modificarse sin acuerdo previo." data-pl="Wszystkie arkusze musza byc prowadzone zgodnie z ustaleniami i nie moga byc zmieniane bez zgody.">All sheets and lists must be maintained as discussed and not changed without prior agreement.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">6</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Document every anomaly in the Warehouse App" data-de="Jede Auffaelligkeit in der Warehouse App dokumentieren" data-fr="Documentez chaque anomalie dans l application Warehouse" data-es="Documenta cada anomalia en la App de almacen" data-pl="Dokumentuj kazda nieprawidlowosc w aplikacji magazynowej">Document every anomaly in the Warehouse App</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="Document every anomaly found on a film in the Warehouse App to inform other departments and the customer." data-de="Dokumentiere jede Auffaelligkeit an Filmen in der Warehouse App um andere Abteilungen zu informieren." data-fr="Documentez chaque anomalie dans l App Warehouse pour informer les autres departements et le client." data-es="Documenta cada anomalia en la App de almacen para informar a otros departamentos y al cliente." data-pl="Dokumentuj kazda nieprawidlowosc w App magazynowej, aby informowac inne dzialy i klienta.">Document every anomaly found on a film in the Warehouse App to inform other departments and the customer.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">7</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Communicate openly and in a timely manner" data-de="Offen und rechtzeitig kommunizieren" data-fr="Communiquez ouvertement et en temps voulu" data-es="Comunica abierta y oportunamente" data-pl="Komunikuj sie otwarcie i na czas">Communicate openly and in a timely manner</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="If you notice a problem with a machine, film or order, inform leadership immediately." data-de="Wenn du ein Problem siehst, informiere die Fuehrung sofort. Kein Problem wird kleiner wenn man es ignoriert." data-fr="Si vous constatez un probleme, informez immediatement la direction." data-es="Si notas un problema, informa a la direccion de inmediato." data-pl="Jesli zauważysz problem, natychmiast poinformuj kierownictwo.">If you notice a problem with a machine, film or order, inform leadership immediately.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">8</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Never leave an active scan unattended" data-de="Einen aktiven Scan nie unbeaufsichtigt lassen" data-fr="Ne laissez jamais un scan actif sans surveillance" data-es="Nunca dejes un scan activo sin supervision" data-pl="Nigdy nie pozostawiaj aktywnego skanowania bez nadzoru">Never leave an active scan unattended</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="An active scan must always be supervised. Do not leave the machine while it is running." data-de="Ein aktiver Scan muss immer ueberwacht werden. Verlasse die Maschine nicht waehrend sie laeuft." data-fr="Un scan actif doit toujours etre surveille. Ne quittez pas la machine pendant son fonctionnement." data-es="Un scan activo debe supervisarse siempre. No dejes la maquina mientras esta en funcionamiento." data-pl="Aktywne skanowanie musi byc nadzorowane. Nie opuszczaj maszyny gdy pracuje.">An active scan must always be supervised. Do not leave the machine while it is running.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">9</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Respect the order of jobs" data-de="Reihenfolge der Auftraege respektieren" data-fr="Respectez l ordre des travaux" data-es="Respeta el orden de los trabajos" data-pl="Przestrzegaj kolejnosci zlecen">Respect the order of jobs</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="Orders are processed in the agreed sequence. No exceptions without prior discussion with leadership." data-de="Auftraege werden in der festgelegten Reihenfolge bearbeitet. Keine Ausnahmen ohne Absprache." data-fr="Les commandes sont traitees dans l ordre convenu. Aucune exception sans discussion prealable." data-es="Los pedidos se procesan en el orden acordado. Sin excepciones sin consulta previa." data-pl="Zamowienia sa realizowane w uzgodnionej kolejnosci. Zadnych wyjatkow bez wczesniejszej rozmowy.">Orders are processed in the agreed sequence. No exceptions without prior discussion with leadership.</p></div></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;"><div style="display:flex;align-items:flex-start;gap:0.85rem;"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1;flex-shrink:0;">10</span><div style="flex:1;"><div class="rule-title" style="font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.3rem;" data-en="Treat all customer data with confidentiality" data-de="Alle Kundendaten vertraulich behandeln" data-fr="Traitez toutes les donnees client de maniere confidentielle" data-es="Trata todos los datos de clientes con confidencialidad" data-pl="Traktuj wszystkie dane klientow poufnie">Treat all customer data with confidentiality</div><p class="rule-desc" style="color:var(--text-mid);font-size:0.85rem;line-height:1.65;margin:0;" data-en="Names, addresses and the contents of customer films remain internal and must not be shared outside." data-de="Namen, Adressen und Filminhalte der Kunden bleiben intern und werden nicht nach aussen weitergegeben." data-fr="Les noms, adresses et contenus des films clients restent internes et ne doivent pas etre partages." data-es="Los nombres, direcciones y contenidos de los clientes son internos y no deben compartirse fuera." data-pl="Imiona, adresy i tresci filmow klientow pozostaja wewnetrzne i nie moga byc udostepniane.">Names, addresses and the contents of customer films remain internal and must not be shared outside.</p></div></div></div>
+        </div>
+      </div>
+    </div>
     <div class="wiki-panel" id="view-foreword">
       <div class="foreword-panel">
         <h1>🎬 Film Dept. Handbook</h1>
@@ -2410,7 +2505,7 @@
         </div>
 
         <button class="foreword-cta" onclick="showView('chat')">
-          💬 Open AI Assistant →
+          💬 Open Assistant →
         </button>
       </div>
     </div>
@@ -2580,7 +2675,8 @@
       </div>
       <div class="input-hint" id="input-hint">Press Enter to send · Shift+Enter for new line</div>
     </div>
-  </div>
+  
+</div>
 </div>
 
 <script>
@@ -2753,13 +2849,13 @@ const TRANSLATIONS = {
   'sidebar.workflow':   { en:'Workflow', de:'Arbeitsablauf', fr:'Workflow', es:'Flujo de trabajo', pl:'Workflow' },
   // Sidebar items
   'nav.wizard':     { en:'Machine Wizard', de:'Maschinen-Wizard', fr:'Assistant machines', es:'Asistente máquinas', pl:'Kreator maszyn' },
-  'nav.assistant':   { en:'AI Assistant', de:'KI-Assistent', fr:'Assistant IA', es:'Asistente IA', pl:'Asystent AI' },
+  'nav.assistant':   { en:'Assistant', de:'Assistent', fr:'Assistant', es:'Asistente', pl:'Asystent' },
   'nav.foreword':    { en:'Foreword', de:'Vorwort', fr:'Avant-propos', es:'Prólogo', pl:'Przedmowa' },
-  'nav.filmid':      { en:'Film ID Guide', de:'Film-Erkennungsguide', fr:'Guide d\'identification', es:'Guía de identificación', pl:'Przewodnik identyfikacji' },
+  'nav.filmid':      { en:'Film ID Guide', de:'Film-Erkennungsguide', fr:'Guide identification', es:'Guía de identificación', pl:'Przewodnik identyfikacji' },
   'nav.checklist':   { en:'Scan Checklist', de:'Scan-Checkliste', fr:'Check-list de scan', es:'Lista de verificación', pl:'Lista kontrolna' },
   // Welcome screen
   'welcome.title':   { en:'🎬 Film Assistant', de:'🎬 Film Assistent', fr:'🎬 Assistant Film', es:'🎬 Asistente de Film', pl:'🎬 Asystent Filmowy' },
-  'welcome.sub':     { en:'Your AI handbook for all questions about film scanners, film types and special cases. Ask anything — in any language.', de:'Dein KI-Nachschlagewerk für alle Fragen rund um Filmscanner, Filmtypen und Sonderfälle. Einfach fragen – in jeder Sprache.', fr:'Votre référence IA pour toutes les questions sur les scanners de film, les types de film et les cas spéciaux. Posez n\'importe quelle question.', es:'Tu referencia de IA para todas las preguntas sobre escáneres de película, tipos de película y casos especiales. Pregunta lo que quieras.', pl:'Twój asystent AI do wszystkich pytań dotyczących skanerów filmowych, typów filmów i przypadków szczególnych. Pytaj o wszystko.' },
+  'welcome.sub':     { en:'Your handbook for all questions about film scanners, film types and special cases. Ask anything — in any language.', de:'Dein KI-Nachschlagewerk für alle Fragen rund um Filmscanner, Filmtypen und Sonderfälle. Einfach fragen – in jeder Sprache.', fr:'Votre référence IA pour toutes les questions sur les scanners de film, les types de film et les cas spéciaux. Posez n\'importe quelle question.', es:'Tu referencia de IA para todas las preguntas sobre escáneres de película, tipos de película y casos especiales. Pregunta lo que quieras.', pl:'Twój asystent AI do wszystkich pytań dotyczących skanerów filmowych, typów filmów i przypadków szczególnych. Pytaj o wszystko.' },
   // Quick cards
   'card.mmt.title':  { en:'MMT Scanner', de:'MMT Scanner', fr:'Scanner MMT', es:'Escáner MMT', pl:'Skaner MMT' },
   'card.mmt.desc':   { en:'Threading, software setup & starting a scan', de:'Threading, Software-Setup & Scan starten', fr:'Chargement, configuration & lancement du scan', es:'Enhebrado, configuración y inicio del scan', pl:'Wkładanie taśmy, konfiguracja i start skanowania' },
@@ -2899,7 +2995,7 @@ function goBack() {
   if (viewHistory.length > 1) {
     viewHistory.pop(); // remove current
     const prev = viewHistory[viewHistory.length - 1];
-    showView(prev, false); // false = don't push to history
+    showView(prev, false); // false = do not push to history
   }
 }
 
@@ -2963,6 +3059,7 @@ function showView(view, pushHistory) {
   addToRecent(view);
   // reload sheets when visiting panel
   if (view === 'sheets') loadSheets();
+  if (view === 'qrcode') renderQRCodes();
 
   // close sidebar on mobile
   closeSidebar();
@@ -3462,9 +3559,9 @@ Extract Audio-Tab → Dateiname → **Extract**
 - ☐ Ton: Optische Spur sichtbar? Magnetkopf ausgerichtet?
 
 ### 3. Aktiver Scan
-- ☐ Mindestens **5 Sekunden Leader** aufgenommen
+- ☐ Mindestens **2 Sekunden Leader** aufgenommen
 - ☐ Aktive Überwachung: Stabilität, Fokus, Ton
-- ☐ Mindestens **5 Sekunden Tail** aufgenommen
+- ☐ Mindestens **2 Sekunden Tail** aufgenommen
 
 ### 4. Abschluss & QA
 - ☐ Datei-Check: Visuell prüfen (Anfang / Mitte / Ende)
@@ -3592,7 +3689,7 @@ async function sendMessage() {
 }
 
 function appendMessage(role, text) {
-  const area = document.getElementById('view-chat');
+  const chatAreaEl = document.getElementById('view-chat');
   const div = document.createElement('div');
   div.className = `message ${role}`;
   
@@ -3606,8 +3703,8 @@ function appendMessage(role, text) {
 
   div.appendChild(avatar);
   div.appendChild(bubble);
-  area.appendChild(div);
-  area.scrollTop = area.scrollHeight;
+  chatAreaEl.appendChild(div);
+  chatAreaEl.scrollTop = chatAreaEl.scrollHeight;
   return div;
 }
 
@@ -3655,57 +3752,126 @@ let wizardAnswers = {};
 let wizardStep = 1;
 
 const WIZARD_RESULTS = {
-  // 35mm → always RetroScan
-  '35mm': { machine: 'RetroScan', icon: '📽️', reason: '35mm can only be scanned on the RetroScan. Always check for "NITRATE" on the film edge before starting.', warn: '🔥 Check for Nitrate Film first!' },
-  // 9.5mm → MMT or RetroScan
-  '9.5mm': { machine: 'MMT or RetroScan', icon: '🎞️', reason: '9.5mm Pathé uses the central perforation. Both MMT and RetroScan support this format. Handle with extreme care — the central perf tears easily.', warn: '⚠️ Cotton gloves mandatory. Rewind slowly.' },
-  // 16mm + magnetic
-  '16mm+sound-mag': { machine: 'Film-Digital (FD)', icon: '⚡', reason: '16mm with magnetic sound must go on the Film-Digital machine. Only FD can capture the magnetic audio track.', warn: null },
-  // 16mm + optical
-  '16mm+sound-opt': { machine: 'RetroScan + AEO-Light', icon: '📽️', reason: '16mm with optical sound: scan on RetroScan, then extract audio with AEO-Light. Remember: optical sound on 16mm sits 26 frames ahead of the picture.', warn: '💡 Set 26-frame offset in AEO-Light.' },
-  // 16mm silent
-  '16mm+silent': { machine: 'MMT (best quality)', icon: '🎞️', reason: 'Silent 16mm can use MMT for best quality, or RetroScan for speed and gentle handling.', warn: null },
-  '16mm+unknown': { machine: 'Inspect first', icon: '🔍', reason: 'Check the film edge: brown stripe = magnetic (→ Film-Digital). Wavy line = optical (→ RetroScan + AEO-Light). No track = silent (→ MMT).', warn: null },
-  // 8mm + magnetic
-  '8mm+sound-mag': { machine: 'Film-Digital FD2', icon: '⚡', reason: 'Super 8 with magnetic sound uses the Film-Digital FD2. Only this machine can capture the magnetic audio track.', warn: '🔊 Check for shedding (brown dust) — stop immediately if present.' },
-  // 8mm + optical
-  '8mm+sound-opt': { machine: 'RetroScan + AEO-Light', icon: '📽️', reason: 'Scan on RetroScan first, then use AEO-Light to extract the optical sound from the scanned frames.', warn: null },
-  // 8mm silent + good
-  '8mm+silent+good': { machine: 'MMT (premium) or Film-Digital (speed)', icon: '🎞️', reason: 'For best quality: use MMT. For high-volume C3 reels: use Film-Digital. Both handle silent 8mm well in good condition.', warn: null },
-  '8mm+silent+aged': { machine: 'RetroScan', icon: '📽️', reason: 'Aged or slightly damaged 8mm is safest on the RetroScan — sprocket-less transport is gentle on splices and old film.', warn: null },
-  '8mm+silent+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️', reason: 'Vinegar Syndrome film ONLY on RetroScan Universal Mark II 4K. Enable "Scan Slow", use aperture F5.6, scan in 2K. Clean machine thoroughly afterwards.', warn: '⚠️ PPE required: gloves + organic vapour mask. Open can away from face.' },
-  '8mm+silent+priority': { machine: 'Film-Digital (FD)', icon: '⚡', reason: 'For C3 reels needing high throughput, use Film-Digital (18–24 fps). Strictly triage C3 only — check for damage before loading.', warn: '⚡ Clean film before scanning. Ghost-frame issue confirmed — monitor carefully.' },
-  '8mm+unknown+good': { machine: 'Inspect first', icon: '🔍', reason: 'Check the film edge for a brown stripe (magnetic → FD2) or wavy line (optical → RetroScan + AEO-Light). If none: treat as silent.', warn: null },
-  '8mm+unknown+aged': { machine: 'RetroScan after inspection', icon: '📽️', reason: 'Inspect carefully first. If silent and aged → RetroScan for gentle handling.', warn: null },
-  '8mm+unknown+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️', reason: 'Vinegar Syndrome takes priority. Use RetroScan with Scan Slow, F5.6, 2K. PPE required.', warn: '⚠️ Consult leadership before scanning.' },
-  '8mm+unknown+priority': { machine: 'Film-Digital (inspect first)', icon: '⚡', reason: 'Inspect for sound track first. If clearly silent C3: Film-Digital. If uncertain: inspect before committing.', warn: null },
+
+  // ── 35mm ─────────────────────────────────────────────────────
+  // 35mm skips sound+condition steps entirely
+  '35mm': { machine: 'RetroScan', icon: '📽️',
+    reason: '35mm can only be scanned on the RetroScan. Always check for "NITRATE" printed on the film edge before starting.',
+    warn: '🔥 Check for Nitrate Film first!' },
+
+  // ── 9.5mm ─────────────────────────────────────────────────────
+  // 9.5mm skips sound+condition steps entirely
+  '9.5mm': { machine: 'MMT or RetroScan', icon: '🎞️',
+    reason: '9.5mm Pathé uses a single central perforation between frames. Both MMT and RetroScan support this format. Handle with extreme care — the central perf tears easily.',
+    warn: '⚠️ Cotton gloves mandatory. Rewind slowly.' },
+
+  // ── 16mm + Magnetic Sound ────────────────────────────────────
+  '16mm+sound-mag': { machine: 'Film-Digital (FD)', icon: '⚡',
+    reason: '16mm with magnetic sound must go on the Film-Digital machine. Only FD can capture the magnetic audio track.',
+    warn: null },
+
+  // ── 16mm + Optical Sound ─────────────────────────────────────
+  '16mm+sound-opt': { machine: 'RetroScan + AEO-Light', icon: '📽️',
+    reason: 'Scan on RetroScan first, then extract the audio with AEO-Light. Important: optical sound on 16mm sits 26 frames ahead of the picture.',
+    warn: '💡 Set 26-frame offset in AEO-Light.' },
+
+  // ── 16mm + Silent ────────────────────────────────────────────
+  '16mm+silent+good': { machine: 'MMT or RetroScan', icon: '🎞️',
+    reason: 'Silent 16mm in good condition: use MMT for best quality output, or RetroScan for faster throughput. Both handle this format well.',
+    warn: null },
+  '16mm+silent+aged': { machine: 'RetroScan', icon: '📽️',
+    reason: 'Aged or slightly damaged 16mm is safest on the RetroScan — sprocket-less transport is gentle on brittle splices and worn film.',
+    warn: null },
+  '16mm+silent+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️',
+    reason: 'Vinegar Syndrome 16mm: ONLY RetroScan Universal Mark II 4K. Enable Scan Slow, aperture F5.6, scan in 2K. Clean machine thoroughly afterwards.',
+    warn: '⚠️ PPE required: gloves + organic vapour mask. Consult leadership before scanning.' },
+  '16mm+silent+priority': { machine: 'RetroScan or MMT', icon: '🎞️',
+    reason: 'For high-volume silent 16mm C3 reels: RetroScan for speed and gentle handling, or MMT if quality is the priority.',
+    warn: null },
+
+  // ── 16mm + Unknown Sound ─────────────────────────────────────
+  '16mm+unknown+good': { machine: 'Inspect first', icon: '🔍',
+    reason: 'Check the film edge: brown stripe = magnetic (→ Film-Digital). Wavy line next to frames = optical (→ RetroScan + AEO-Light). Nothing = silent (→ MMT or RetroScan).',
+    warn: null },
+  '16mm+unknown+aged': { machine: 'Inspect, then RetroScan', icon: '📽️',
+    reason: 'Inspect for sound track first. Regardless of result, aged 16mm is safest on RetroScan — unless magnetic sound is present, which requires Film-Digital.',
+    warn: null },
+  '16mm+unknown+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️',
+    reason: 'Vinegar Syndrome takes priority over sound type. Use RetroScan with Scan Slow, F5.6, 2K. If magnetic sound is present, do not scan — consult leadership.',
+    warn: '⚠️ PPE required. Consult leadership before scanning.' },
+  '16mm+unknown+priority': { machine: 'Inspect first', icon: '🔍',
+    reason: 'Check sound track before deciding. Silent C3 → RetroScan or MMT. Magnetic → Film-Digital. Optical → RetroScan + AEO-Light.',
+    warn: null },
+
+  // ── 8mm + Magnetic Sound ─────────────────────────────────────
+  '8mm+sound-mag': { machine: 'Film-Digital FD2', icon: '⚡',
+    reason: 'Super 8 with magnetic sound requires the Film-Digital FD2. Only this machine can capture the magnetic audio track.',
+    warn: '🔊 Check for shedding (brown dust on the heads) — stop immediately if present.' },
+
+  // ── 8mm + Optical Sound ──────────────────────────────────────
+  '8mm+sound-opt': { machine: 'RetroScan + AEO-Light', icon: '📽️',
+    reason: 'Scan on RetroScan first, then extract the optical sound using AEO-Light.',
+    warn: null },
+
+  // ── 8mm + Silent ─────────────────────────────────────────────
+  '8mm+silent+good': { machine: 'MMT or Film-Digital', icon: '🎞️',
+    reason: 'Silent 8mm in good condition: use MMT for best quality, or Film-Digital for high-volume C3 reels. Both handle this well.',
+    warn: null },
+  '8mm+silent+aged': { machine: 'RetroScan', icon: '📽️',
+    reason: 'Aged or slightly damaged 8mm is safest on the RetroScan — sprocket-less transport is gentle on old splices and brittle film.',
+    warn: null },
+  '8mm+silent+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️',
+    reason: 'Vinegar Syndrome 8mm: ONLY RetroScan Universal Mark II 4K. Enable Scan Slow, aperture F5.6, scan in 2K. Clean machine thoroughly afterwards.',
+    warn: '⚠️ PPE required: gloves + organic vapour mask. Open can away from face.' },
+  '8mm+silent+priority': { machine: 'Film-Digital (FD)', icon: '⚡',
+    reason: 'For high-volume silent 8mm C3 reels: use Film-Digital (18–24 fps). Strictly triage C3 only — inspect for damage before loading.',
+    warn: '⚡ Clean film before scanning. Ghost-frame issue confirmed — monitor actively.' },
+
+  // ── 8mm + Unknown Sound ──────────────────────────────────────
+  '8mm+unknown+good': { machine: 'Inspect first', icon: '🔍',
+    reason: 'Check the film edge: brown stripe = magnetic (→ FD2). Wavy line = optical (→ RetroScan + AEO-Light). Nothing visible = treat as silent (→ MMT or Film-Digital).',
+    warn: null },
+  '8mm+unknown+aged': { machine: 'Inspect, then RetroScan', icon: '📽️',
+    reason: 'Inspect for sound track first. Regardless of result, aged 8mm is safest on RetroScan — unless magnetic sound is present (→ FD2).',
+    warn: null },
+  '8mm+unknown+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️',
+    reason: 'Vinegar Syndrome takes priority. Use RetroScan with Scan Slow, F5.6, 2K. PPE required.',
+    warn: '⚠️ Consult leadership before scanning.' },
+  '8mm+unknown+priority': { machine: 'Inspect, then Film-Digital', icon: '⚡',
+    reason: 'Check for sound track first. If clearly silent C3: Film-Digital. If magnetic: FD2. If uncertain: inspect before committing.',
+    warn: null },
+
 };
 
 function wizardNext(step, answer) {
   wizardAnswers[step] = answer;
-  // progress dots
   document.getElementById('wd' + (step-1)).classList.add('done');
 
   if (step === 1) {
     const fmt = answer;
+    // 35mm and 9.5mm skip sound + condition steps
     if (fmt === '35mm' || fmt === '9.5mm') {
-      // skip steps 2+3, show result directly
       wizardAnswers[2] = 'na'; wizardAnswers[3] = 'na';
+      document.getElementById('wd1').classList.add('done');
+      document.getElementById('wd2').classList.add('done');
       showWizardResult(fmt);
       return;
     }
     document.getElementById('ws1').classList.remove('active');
     document.getElementById('ws2').classList.add('active');
+
   } else if (step === 2) {
     document.getElementById('ws2').classList.remove('active');
-    // if magnetic sound on 8mm or 16mm → skip condition step
+    // Magnetic or optical → skip condition step (machine is determined by sound alone)
     if (answer === 'sound-mag' || answer === 'sound-opt') {
       wizardAnswers[3] = 'na';
       document.getElementById('wd2').classList.add('done');
       showWizardResult(wizardAnswers[1] + '+' + answer);
     } else {
+      // silent or unknown → need condition
       document.getElementById('ws3').classList.add('active');
     }
+
   } else if (step === 3) {
     document.getElementById('wd2').classList.add('done');
     document.getElementById('ws3').classList.remove('active');
@@ -3783,15 +3949,15 @@ function toggleFav(e, view) {
 }
 
 function renderFavourites() {
-  const section = document.getElementById('fav-section');
-  const list = document.getElementById('fav-list');
-  if (!list) return;
+  const favSection = document.getElementById('fav-section');
+  const favList = document.getElementById('fav-list');
+  if (!favList) return;
   if (favourites.length === 0) {
-    section.style.display = 'none';
+    favSection.style.display = 'none';
     return;
   }
-  section.style.display = 'block';
-  list.innerHTML = favourites.map(v =>
+  favSection.style.display = 'block';
+  favList.innerHTML = favourites.map(v =>
     `<div class="sidebar-item" onclick="showView('${v}')">
       <div class="sidebar-item-left">
         <span class="sidebar-icon">${PAGE_ICONS[v]||'📄'}</span> ${PAGE_LABELS[v]||v}
@@ -3821,12 +3987,12 @@ function addToRecent(view) {
 }
 
 function renderRecent() {
-  const section = document.getElementById('recent-section');
-  const list = document.getElementById('recent-list');
-  if (!list) return;
-  if (recentViews.length === 0) { section.style.display = 'none'; return; }
-  section.style.display = 'block';
-  list.innerHTML = recentViews.map(v =>
+  const recSection = document.getElementById('recent-section');
+  const recList = document.getElementById('recent-list');
+  if (!recList) return;
+  if (recentViews.length === 0) { recSection.style.display = 'none'; return; }
+  recSection.style.display = 'block';
+  recList.innerHTML = recentViews.map(v =>
     `<div class="sidebar-item" onclick="showView('${v}')">
       <div class="sidebar-item-left">
         <span class="sidebar-icon">${PAGE_ICONS[v]||'📄'}</span> ${PAGE_LABELS[v]||v}
@@ -3845,8 +4011,8 @@ let dismissedNotifs = JSON.parse(localStorage.getItem('cineops_notifs') || '[]')
 
 function checkNotifications() {
   const unseen = UPDATES.filter(u => !dismissedNotifs.includes(u.id));
-  const badge = document.getElementById('notif-badge');
-  if (badge) badge.classList.toggle('visible', unseen.length > 0);
+  const notifBadge = document.getElementById('notif-badge');
+  if (notifBadge) notifBadge.classList.toggle('visible', unseen.length > 0);
   if (unseen.length > 0) {
     setTimeout(() => {
       document.getElementById('notif-text').textContent = unseen[0].text;
@@ -3864,7 +4030,7 @@ function dismissNotif() {
   UPDATES.forEach(u => { if (!dismissedNotifs.includes(u.id)) dismissedNotifs.push(u.id); });
   localStorage.setItem('cineops_notifs', JSON.stringify(dismissedNotifs));
   const badge = document.getElementById('notif-badge');
-  if (badge) badge.classList.remove('visible');
+  if (notifBadge) notifBadge.classList.remove('visible');
 }
 
 function showNotifPanel() {
@@ -3926,7 +4092,7 @@ function applyPanelTranslations(lang) {
       tmp.innerHTML = enContent;
       const banner = tmp.querySelector('.lang-banner');
       if (banner) {
-        banner.innerHTML = '🌐 This page is not yet available in your language. Showing English. Use the <strong>AI Assistant</strong> to ask in your language.';
+        banner.innerHTML = '🌐 This page is not yet available in your language. Showing English. Use the <strong>Assistant</strong> to ask in your language.';
         banner.style.borderColor = 'rgba(200,160,64,0.3)';
       }
       wc.outerHTML = tmp.innerHTML;
@@ -4319,9 +4485,9 @@ PANEL_CONTENT.de['view-checklist'] = `<div class="wiki-content">
 </ul>
 <h3>3. Aktiver Scan</h3>
 <ul class="checklist">
-<li>Mindestens <strong>5 Sekunden Leader</strong> aufgenommen</li>
+<li>Mindestens <strong>2 Sekunden Leader</strong> aufgenommen</li>
 <li>Aktive Überwachung: Stabilität, Fokus, Ton</li>
-<li>Mindestens <strong>5 Sekunden Tail</strong> aufgenommen</li>
+<li>Mindestens <strong>2 Sekunden Tail</strong> aufgenommen</li>
 </ul>
 <h3>4. Abschluss &amp; QA</h3>
 <ul class="checklist">
@@ -4345,7 +4511,7 @@ PANEL_CONTENT.de['view-checklist'] = `<div class="wiki-content">
 
 // ===== DAILY TIP =====
 const DAILY_TIPS = [
-  "Always capture at least 5 seconds of leader AND tail on every scan.",
+  "Always capture at least 2 seconds of leader on every scan.",
   "Clean the film gate with compressed air before every new project.",
   "Close film cans immediately after removing the material.",
   "Only set RetroScan to FORWARD after clicking Start in the software.",
@@ -4449,11 +4615,6 @@ function handleImgDrop(e, pid) {
   files.forEach(f => readAndStoreImage(f, pid));
 }
 
-document.getElementById('img-file-input') && document.getElementById('img-file-input').addEventListener('change', function() {
-  const pid = this.dataset.panel;
-  Array.from(this.files).forEach(f => readAndStoreImage(f, pid));
-  this.value = '';
-});
 
 function readAndStoreImage(file, pid) {
   const reader = new FileReader();
@@ -4496,11 +4657,11 @@ function renderImgGrid(pid) {
 function openImgFull(pid, idx) {
   const imgs = JSON.parse(localStorage.getItem('cineops_imgs_' + pid) || '[]');
   if (!imgs[idx]) return;
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:1000;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
-  overlay.innerHTML = '<img src="' + imgs[idx].src + '" style="max-width:95vw;max-height:92vh;border-radius:8px;object-fit:contain;">';
-  overlay.onclick = () => overlay.remove();
-  document.body.appendChild(overlay);
+  const imgOverlay = document.createElement('div');
+  imgOverlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:1000;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+  imgOverlay.innerHTML = '<img src="' + imgs[idx].src + '" style="max-width:95vw;max-height:92vh;border-radius:8px;object-fit:contain;">';
+  imgOverlay.onclick = () => imgOverlay.remove();
+  document.body.appendChild(imgOverlay);
 }
 
 function loadAllImages() {
@@ -4511,16 +4672,16 @@ function loadAllImages() {
 
 // hidden file input for image uploads
 if (!document.getElementById('img-file-input')) {
-  const inp = document.createElement('input');
-  inp.type = 'file'; inp.id = 'img-file-input'; inp.accept = 'image/*'; inp.multiple = true;
-  inp.style.display = 'none';
-  inp.addEventListener('change', function() {
+  const fileInp = document.createElement('input');
+  fileInp.type = 'file'; fileInp.id = 'img-file-input'; fileInp.accept = 'image/*'; fileInp.multiple = true;
+  fileInp.style.display = 'none';
+  fileInp.addEventListener('change', function() {
     const pid = this.dataset.panel;
     if (!pid) return;
     Array.from(this.files).forEach(f => readAndStoreImage(f, pid));
     this.value = '';
   });
-  document.body.appendChild(inp);
+  document.body.appendChild(fileInp);
 }
 
 
@@ -4530,6 +4691,275 @@ window.addEventListener('beforeprint', function() {
   const cur = document.getElementById('view-' + currentView);
   if (cur) cur.classList.add('active');
 });
+
+
+
+// ===== TUTORIAL =====
+const TUTORIAL_STEPS = [
+  {
+    icon: '👋',
+    title: 'Welcome to CineOps!',
+    text: 'This is your <strong>Film Department Handbook</strong> — everything you need to know about film scanning, machines, film types and special cases in one place.<br><br>This quick tour will walk you through all the key sections. It only takes 2 minutes!',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '🧭',
+    title: 'Machine Wizard',
+    text: 'Not sure which scanner to use? The <strong>Machine Wizard</strong> helps you choose the right machine in 3 clicks.<br><br>Simply answer: What format? Does it have sound? What condition is the film in? — and you get an instant recommendation.',
+    highlight: 'nav-wizard',
+    action: null,
+  },
+  {
+    icon: '✅',
+    title: 'Scan Checklist',
+    text: 'The <strong>Scan Checklist</strong> is your step-by-step guide for every scan job. It covers:<br><br>• Pre-production setup<br>• Machine threading check<br>• Active scan monitoring<br>• Completion and QA<br><br>You can also <strong>print it</strong> and keep it at your workstation.',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '🎞️',
+    title: 'Machines',
+    text: 'Under <strong>Machines</strong> you will find complete operating manuals for all three scanners:<br><br>• <strong>MMT Scanner</strong> — best quality, up to 5.5K<br>• <strong>RetroScan</strong> — gentle on old/damaged film<br>• <strong>Film-Digital (FD)</strong> — fastest, for C3 reels and magnetic sound',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '🎬',
+    title: 'Film Types',
+    text: 'Not sure what film you are holding? The <strong>Film Types</strong> section covers all formats:<br><br>• Super 8, Regular 8, 9.5mm Pathé<br>• 16mm, 35mm<br><br>Each page explains how to identify the format, what scanner to use, and how to handle it correctly.',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '🔍',
+    title: 'Film ID Guide',
+    text: 'The <strong>Film ID Guide</strong> is a quick visual reference. Answer 4 simple questions about the film in your hand and instantly identify the format — including whether it has sound and which machine to use.',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '🔊',
+    title: 'Sound',
+    text: 'The <strong>Sound</strong> section covers everything about audio on film:<br><br>• <strong>Magnetic Sound</strong> — brown stripe on the edge (FD2 for Super 8)<br>• <strong>Optical Sound</strong> — wavy line next to frames (RetroScan + AEO-Light)<br>• <strong>Sepmag</strong> — picture and sound on two separate reels<br>• <strong>AEO-Light</strong> — step-by-step guide to extract optical sound',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '⚠️',
+    title: 'Special Cases',
+    text: 'The <strong>Special Cases</strong> section covers hazardous and damaged film — critical knowledge for every technician:<br><br>• <strong>Vinegar Syndrome</strong> — chemical decay, PPE required<br>• <strong>Mouldy Film</strong> — biohazard, NEVER put through a machine<br>• <strong>Nitrate Film</strong> — highly flammable, 35mm only<br>• <strong>Water Damage</strong> — fragile emulsion, handle with extreme care',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '📋',
+    title: 'House Rules',
+    text: 'The <strong>House Rules</strong> section contains the 10 department rules that apply to everyone.<br><br>You can switch the language of the rules using the flag buttons — available in English, German, French, Spanish and Polish.',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '💬',
+    title: 'Assistant',
+    text: 'The <strong>Assistant</strong> is your personal expert. Ask any question about film scanning — in any language — and get an instant answer based on the handbook.<br><br>Try asking: <em>"How do I thread the MMT?"</em> or <em>"I can smell vinegar — what do I do?"</em>',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '📸',
+    title: 'Photos & Notes',
+    text: 'On every page you can:<br><br>• <strong>Add photos</strong> — upload your own images relevant to that topic (stored locally in your browser)<br>• <strong>Add personal notes</strong> — write and save notes per page<br>• <strong>Print</strong> any page using the 🖨️ button',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '⭐',
+    title: 'Favourites & Recent',
+    text: 'Use the <strong>☆ star icon</strong> next to any item in the sidebar to save it as a favourite — for quick access to the pages you use most.<br><br>The <strong>Recently Viewed</strong> section automatically tracks your last 5 visited pages.',
+    highlight: null,
+    action: null,
+  },
+  {
+    icon: '🎉',
+    title: 'You are all set!',
+    text: 'That is everything! You now know your way around CineOps.<br><br>If you ever need a reminder, just click the <strong>🎓 Tutorial</strong> button in the top bar to run through this guide again.<br><br>Good luck — and handle those films with care! 🎞️',
+    highlight: null,
+    action: 'finish',
+  },
+];
+
+let tutStep = 0;
+
+function startTutorial() {
+  tutStep = 0;
+  document.getElementById('tutorial-overlay').classList.add('visible');
+  renderTutorialStep();
+}
+
+function endTutorial() {
+  document.getElementById('tutorial-overlay').classList.remove('visible');
+  localStorage.setItem('cineops_tutorial_done', '1');
+}
+
+function tutorialNext() {
+  if (tutStep < TUTORIAL_STEPS.length - 1) {
+    tutStep++;
+    renderTutorialStep();
+  } else {
+    endTutorial();
+  }
+}
+
+function tutorialPrev() {
+  if (tutStep > 0) {
+    tutStep--;
+    renderTutorialStep();
+  }
+}
+
+function renderTutorialStep() {
+  const step = TUTORIAL_STEPS[tutStep];
+  const total = TUTORIAL_STEPS.length;
+  const isLast = tutStep === total - 1;
+  const isFirst = tutStep === 0;
+
+  // Progress bars
+  const prog = document.getElementById('tutorial-progress');
+  prog.innerHTML = TUTORIAL_STEPS.map((_, i) =>
+    `<div class="tutorial-progress-bar ${i < tutStep ? 'done' : i === tutStep ? 'active' : ''}"></div>`
+  ).join('');
+
+  // Body
+  document.getElementById('tutorial-body').innerHTML = `
+    <span class="tutorial-step-icon">${step.icon}</span>
+    <div class="tutorial-step-title">${step.title}</div>
+    <div class="tutorial-step-text">${step.text}</div>
+    ${step.highlight ? `<div class="tutorial-highlight">👈 Find this in the left sidebar</div>` : ''}
+  `;
+
+  // Counter
+  document.getElementById('tutorial-counter').textContent = `${tutStep + 1} / ${total}`;
+
+  // Buttons
+  document.getElementById('tutorial-prev').style.display = isFirst ? 'none' : '';
+  const nextBtn = document.getElementById('tutorial-next');
+  nextBtn.textContent = isLast ? '✓ Done' : 'Next →';
+}
+
+function initTutorial() {
+  const done = localStorage.getItem('cineops_tutorial_done');
+  if (!done) {
+    // Auto-start for first-time visitors after 1.5s
+    setTimeout(startTutorial, 1500);
+  }
+}
+
+
+// ===== MULTILINGUAL RULES =====
+let rulesLang = 'en';
+function setRulesLang(lang) {
+  rulesLang = lang;
+  document.querySelectorAll('.rules-lang-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('rl-' + lang);
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.rule-title').forEach(el => {
+    el.textContent = el.dataset[lang] || el.dataset.en;
+  });
+  document.querySelectorAll('.rule-desc').forEach(el => {
+    el.textContent = el.dataset[lang] || el.dataset.en;
+  });
+}
+
+// ===== QR CODE GENERATOR =====
+function renderQRCodes() {
+  const grid = document.getElementById('qr-grid');
+  if (!grid) return;
+  const baseUrl = (document.getElementById('qr-base-url')?.value || 'https://cineops26.github.io/Cine.ops').replace(/\/$/, '');
+  const sections = [
+    { id: 'mmt',       label: 'MMT Scanner',        icon: '🎞️' },
+    { id: 'retroscan', label: 'RetroScan',           icon: '📽️' },
+    { id: 'fd',        label: 'Film-Digital (FD)',   icon: '⚡' },
+    { id: 'super8',    label: 'Super 8',             icon: '🎬' },
+    { id: 'regular8',  label: 'Regular 8',           icon: '🎬' },
+    { id: '9.5mm',     label: '9.5mm Pathé',         icon: '🎬' },
+    { id: '16mm',      label: '16mm',                icon: '🎬' },
+    { id: '35mm',      label: '35mm',                icon: '🎬' },
+    { id: 'vinegar',   label: 'Vinegar Syndrome',    icon: '⚠️' },
+    { id: 'mould',     label: 'Mouldy Film',         icon: '🦠' },
+    { id: 'nitrate',   label: 'Nitrate Film',        icon: '🔥' },
+    { id: 'checklist', label: 'Scan Checklist',      icon: '✅' },
+    { id: 'hausregeln',label: 'House Rules',         icon: '📋' },
+    { id: 'magnetic',  label: 'Magnetic Sound',      icon: '🔊' },
+    { id: 'optical',   label: 'Optical Sound',       icon: '〰️' },
+    { id: 'aeolight',  label: 'AEO-Light',           icon: '💻' },
+    { id: 'wizard',    label: 'Machine Wizard',      icon: '🧭' },
+  ];
+
+  grid.innerHTML = sections.map(s => {
+    const url = baseUrl + '#' + s.id;
+    const canvasId = 'qrc-' + s.id;
+    return `<div class="qr-card">
+      <canvas id="${canvasId}" width="140" height="140"></canvas>
+      <div class="qr-label">${s.icon} ${s.label}</div>
+      <div class="qr-sublabel" style="word-break:break-all;font-size:0.6rem;">${url}</div>
+      <button class="qr-download-btn" onclick="downloadQR('${canvasId}','${s.label}')">⬇ Download</button>
+    </div>`;
+  }).join('');
+
+  // Draw QR codes using a simple URL-based approach
+  sections.forEach(s => {
+    const url = baseUrl + '#' + s.id;
+    const canvas = document.getElementById('qrc-' + s.id);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    // Use Google Charts API to generate QR as image
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 140, 140);
+      ctx.drawImage(img, 0, 0, 140, 140);
+    };
+    img.onerror = () => {
+      // Fallback: show URL as text
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(0, 0, 140, 140);
+      ctx.fillStyle = '#e8c547';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('QR: ' + s.label, 70, 70);
+    };
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=' + encodeURIComponent(url);
+  });
+}
+
+function downloadQR(canvasId, label) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = 'CineOps-QR-' + label.replace(/\s+/g, '-') + '.png';
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+// ===== OFFLINE MODE =====
+function initOfflineMode() {
+  const banner = document.getElementById('offline-banner');
+  if (!banner) return;
+  function update() {
+    banner.classList.toggle('visible', !navigator.onLine);
+  }
+  window.addEventListener('online', () => {
+    update();
+    showToast('✅ Back online!');
+  });
+  window.addEventListener('offline', () => {
+    update();
+    showToast('⚠️ You are offline — CineOps still works from cache.');
+  });
+  update();
+}
 
 // ===== SHEETS =====
 function loadSheets() {
@@ -4585,6 +5015,92 @@ function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+
+// ===== SCAN TIMER =====
+let timerInterval = null;
+let timerSeconds = 0;
+let timerRunning = false;
+let timerLapList = [];
+
+function toggleTimer() {
+  const w = document.getElementById('timer-widget');
+  if (w) w.classList.toggle('visible');
+}
+
+function timerStartStop() {
+  const btn = document.getElementById('timer-start-btn');
+  const display = document.getElementById('timer-display');
+  if (!timerRunning) {
+    timerRunning = true;
+    if (btn) { btn.textContent = '⏸ Pause'; btn.className = 'timer-btn stop'; }
+    if (display) display.classList.add('running');
+    timerInterval = setInterval(() => { timerSeconds++; updateTimerDisplay(); }, 1000);
+  } else {
+    timerRunning = false;
+    clearInterval(timerInterval);
+    if (btn) { btn.textContent = '▶ Resume'; btn.className = 'timer-btn start'; }
+    if (display) display.classList.remove('running');
+  }
+}
+
+function timerReset() {
+  timerRunning = false;
+  clearInterval(timerInterval);
+  timerSeconds = 0; timerLapList = [];
+  const d = document.getElementById('timer-display');
+  if (d) { d.textContent = '00:00:00'; d.classList.remove('running'); }
+  const btn = document.getElementById('timer-start-btn');
+  if (btn) { btn.textContent = '▶ Start'; btn.className = 'timer-btn start'; }
+  const laps = document.getElementById('timer-laps');
+  if (laps) laps.innerHTML = '';
+  const lbl = document.getElementById('timer-label');
+  if (lbl) lbl.textContent = 'SCAN TIMER';
+}
+
+function timerLap() {
+  if (timerSeconds === 0) return;
+  const t = formatTimerTime(timerSeconds);
+  timerLapList.push(t);
+  const el = document.getElementById('timer-laps');
+  if (el) el.innerHTML = timerLapList.map((l,i) =>
+    `<div class="timer-lap"><span>Lap ${i+1}</span><span>${l}</span></div>`
+  ).reverse().join('');
+}
+
+function timer5sec() {
+  timerReset();
+  const lbl = document.getElementById('timer-label');
+  if (lbl) lbl.textContent = '2s LEADER CHECK';
+  timerStartStop();
+  setTimeout(() => {
+    if (timerRunning) { timerStartStop(); showToast('⏰ 2 seconds — leader captured!'); }
+  }, 2000);
+}
+
+function updateTimerDisplay() {
+  const d = document.getElementById('timer-display');
+  if (d) d.textContent = formatTimerTime(timerSeconds);
+}
+
+function formatTimerTime(s) {
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  return [h,m,sec].map(v => String(v).padStart(2,'0')).join(':');
+}
+
+// ===== PRINT PANEL =====
+function printPanel(panelId, label) {
+  document.querySelectorAll('.wiki-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('view-' + panelId);
+  if (panel) panel.classList.add('active');
+  const origTitle = document.title;
+  document.title = 'CineOps — ' + label;
+  window.print();
+  document.title = origTitle;
+  if (panel) panel.classList.remove('active');
+  const cur = document.getElementById('view-' + currentView);
+  if (cur) cur.classList.add('active');
+}
+
 // Init
 captureEnContent();
 applyTranslations();
@@ -4594,10 +5110,122 @@ initPwaBanner();
 loadAllNotes();
 loadAllImages();
 loadSheets();
+renderQRCodes();
+initOfflineMode();
+initTutorial();
 renderFavourites();
 renderRecent();
 updateFavButtons();
 checkNotifications();
 </script>
+
+
+<!-- SCAN TIMER -->
+<button class="timer-fab" id="timer-fab" onclick="toggleTimer()" title="Scan Timer">⏱️</button>
+<div class="timer-widget" id="timer-widget">
+  <button class="timer-close" onclick="toggleTimer()">✕</button>
+  <div class="timer-label" id="timer-label">SCAN TIMER</div>
+  <div class="timer-display" id="timer-display">00:00:00</div>
+  <div class="timer-btns">
+    <button class="timer-btn start" id="timer-start-btn" onclick="timerStartStop()">▶ Start</button>
+    <button class="timer-btn" onclick="timerLap()">⚑ Lap</button>
+    <button class="timer-btn" onclick="timerReset()">↺ Reset</button>
+    <button class="timer-btn" style="grid-column:span 2;font-size:0.7rem;" onclick="timer5sec()">⏰ 2s leader check</button>
+  </div>
+  <div class="timer-laps" id="timer-laps"></div>
+</div>
+
+<!-- TUTORIAL OVERLAY -->
+<div class="tutorial-overlay" id="tutorial-overlay">
+  <div class="tutorial-box">
+    <div class="tutorial-header">
+      <div class="tutorial-header-left">
+        <div class="tutorial-avatar">🎓</div>
+        <div>
+          <div class="tutorial-title">CineOps Guide</div>
+          <div class="tutorial-subtitle">Your personal handbook assistant</div>
+        </div>
+      </div>
+      <button class="tutorial-close" onclick="endTutorial()">✕</button>
+    </div>
+    <div class="tutorial-progress" id="tutorial-progress"></div>
+    <div class="tutorial-body" id="tutorial-body"></div>
+    <div class="tutorial-footer">
+      <span class="tutorial-counter" id="tutorial-counter"></span>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <button class="tutorial-skip" onclick="endTutorial()">Skip tutorial</button>
+        <div class="tutorial-btn-group">
+          <button class="tutorial-btn" id="tutorial-prev" onclick="tutorialPrev()">← Back</button>
+          <button class="tutorial-btn primary" id="tutorial-next" onclick="tutorialNext()">Next →</button>
+        </div>
+
+        <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+          <h3 style="color:var(--accent);font-size:1rem;margin-bottom:1rem;">🚨 When to Contact Leadership Immediately</h3>
+          <p style="color:var(--text-dim);font-size:0.8rem;margin-bottom:1rem;">Stop what you are doing and inform leadership without delay in any of the following situations:</p>
+
+          <div style="display:flex;flex-direction:column;gap:0.65rem;">
+
+            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.1rem;flex-shrink:0;">🔥</span>
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Nitrate Film detected</div>
+                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">Always — before any nitrate reel is scanned. Fire risk, lethal gases, emergency plan must be confirmed first.</div>
+              </div>
+            </div>
+
+            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.1rem;flex-shrink:0;">⚠️</span>
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Vinegar Syndrome — Stage 3 or film keeps tearing</div>
+                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">If the film is powdery, rust-like, or snaps repeatedly during scanning — stop immediately. The film may be beyond saving.</div>
+              </div>
+            </div>
+
+            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.1rem;flex-shrink:0;">🦠</span>
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Mouldy Film found</div>
+                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">Always — no mouldy film goes through any machine without leadership approval. Contamination risk for the entire collection.</div>
+              </div>
+            </div>
+
+            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.1rem;flex-shrink:0;">💧</span>
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Water damage with blocking</div>
+                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">If film layers are fused together — do not scan. Leadership decides whether restoration is possible.</div>
+              </div>
+            </div>
+
+            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.1rem;flex-shrink:0;">🎞️</span>
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Unknown format or unidentifiable damage</div>
+                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">If the format or damage type cannot be identified — do not guess. Ask before proceeding.</div>
+              </div>
+            </div>
+
+            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.1rem;flex-shrink:0;">📋</span>
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Deviation from job order required</div>
+                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">Per House Rule 9 — no exceptions to the agreed job sequence without prior discussion.</div>
+              </div>
+            </div>
+
+            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.1rem;flex-shrink:0;">⚡</span>
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Machine behaves abnormally</div>
+                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">Unusual sounds, repeated film tears, unexpected stops, or any behaviour outside the norm — stop the scan and report immediately.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
