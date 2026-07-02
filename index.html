@@ -1089,86 +1089,86 @@
         <div class="sidebar-item-left"><span class="sidebar-icon">🔍</span> <span data-i18n-text="nav.filmid">Film ID Guide</span></div>
       </div>
       <div class="sidebar-item" onclick="showView('sheets')" data-search="sheets google spreadsheet links">
-        <div class="sidebar-item-left"><span class="sidebar-icon">📊</span> Sheets</div>
+        <div class="sidebar-item-left"><span class="sidebar-icon">📊</span> <span data-i18n-text="nav.sheets">Sheets</span></div>
       </div>
       <div class="sidebar-item" onclick="showView('hausregeln')" data-search="hausregeln rules department conduct">
-        <div class="sidebar-item-left"><span class="sidebar-icon">📋</span> Dept. Rules</div>
+        <div class="sidebar-item-left"><span class="sidebar-icon">📋</span> <span data-i18n-text="nav.rules">Dept. Rules</span></div>
       </div>
       <div class="sidebar-item" onclick="showView('qrcode')" data-search="qr code generator print machine link">
-        <div class="sidebar-item-left"><span class="sidebar-icon">📱</span> QR Codes</div>
+        <div class="sidebar-item-left"><span class="sidebar-icon">📱</span> <span data-i18n-text="nav.qr">QR Codes</span></div>
       </div>
     </div>
     <!-- RECENT -->
     <div class="sidebar-section" id="recent-section" style="display:none;">
-      <div class="sidebar-label">Recently Viewed</div>
+      <div class="sidebar-label" data-i18n="sidebar.recent">Recently Viewed</div>
       <div id="recent-list"></div>
     </div>
     <!-- FAVORITES -->
     <div class="sidebar-section" id="fav-section" style="display:none;">
-      <div class="sidebar-label">Favourites ⭐</div>
+      <div class="sidebar-label" data-i18n="sidebar.favourites">Favourites ⭐</div>
       <div id="fav-list"></div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.machines">Machines</div>
       <div class="sidebar-item" onclick="showView('mmt')"  data-search="mmt scanner threading gate sprocket software">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🎞️</span> MMT Scanner</div><button class="fav-btn" onclick="toggleFav(event,'mmt')" id="fav-mmt" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🎞️</span> <span data-i18n-text="card.mmt.title">MMT Scanner</span></div><button class="fav-btn" onclick="toggleFav(event,'mmt')" id="fav-mmt" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('retroscan')"  data-search="retroscan movistuff hardware lightpin forward export overnight">
-        <div class="sidebar-item-left"><span class="sidebar-icon">📽️</span> RetroScan (Movistuff)</div><button class="fav-btn" onclick="toggleFav(event,'retroscan')" id="fav-retroscan" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">📽️</span> <span data-i18n-text="card.retroscan.title">RetroScan (Movistuff)</span></div><button class="fav-btn" onclick="toggleFav(event,'retroscan')" id="fav-retroscan" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('fd')"  data-search="film digital fd fd1 fd2 ghost frames speed c3">
-        <div class="sidebar-item-left"><span class="sidebar-icon">⚡</span> Film-Digital (FD)</div><button class="fav-btn" onclick="toggleFav(event,'fd')" id="fav-fd" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">⚡</span> <span data-i18n-text="card.fd.title">Film-Digital (FD)</span></div><button class="fav-btn" onclick="toggleFav(event,'fd')" id="fav-fd" title="Favourite">☆</button>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.filmtypes">Film Types</div>
       <div class="sidebar-item" onclick="showView('super8')"  data-search="super 8 kodak 1965 cartridge sound silent">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> Super 8</div><button class="fav-btn" onclick="toggleFav(event,'super8')" id="fav-super8" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.super8">Super 8</span></div><button class="fav-btn" onclick="toggleFav(event,'super8')" id="fav-super8" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('regular8')"  data-search="regular 8 standard 8 1930s silent">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> Regular 8 / Standard 8</div><button class="fav-btn" onclick="toggleFav(event,'regular8')" id="fav-regular8" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.regular8">Regular 8 / Standard 8</span></div><button class="fav-btn" onclick="toggleFav(event,'regular8')" id="fav-regular8" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('9.5mm')"  data-search="9.5mm pathe pathé baby central perforation">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 9.5mm Pathé</div><button class="fav-btn" onclick="toggleFav(event,'9.5mm')" id="fav-9.5mm" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.9mm5">9.5mm Pathé</span></div><button class="fav-btn" onclick="toggleFav(event,'9.5mm')" id="fav-9.5mm" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('16mm')"  data-search="16mm eastman kodak documentary optical magnetic">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 16mm</div><button class="fav-btn" onclick="toggleFav(event,'16mm')" id="fav-16mm" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.16mm">16mm</span></div><button class="fav-btn" onclick="toggleFav(event,'16mm')" id="fav-16mm" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('35mm')"  data-search="35mm cinema professional nitrate cinemascope">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> 35mm</div><button class="fav-btn" onclick="toggleFav(event,'35mm')" id="fav-35mm" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.35mm">35mm</span></div><button class="fav-btn" onclick="toggleFav(event,'35mm')" id="fav-35mm" title="Favourite">☆</button>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.special">Special Cases</div>
       <div class="sidebar-item" onclick="showView('tenite')"  data-search="tenite reel decay bloom plastic spool grey">
-        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> Tenite Reel Decay</div><button class="fav-btn" onclick="toggleFav(event,'tenite')" id="fav-tenite" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> <span data-i18n-text="nav.tenite">Tenite Reel Decay</span></div><button class="fav-btn" onclick="toggleFav(event,'tenite')" id="fav-tenite" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('vinegar')"  data-search="vinegar syndrome acetate smell channeling buckling ppe">
-        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> Vinegar Syndrome</div><button class="fav-btn" onclick="toggleFav(event,'vinegar')" id="fav-vinegar" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> <span data-i18n-text="nav.vinegar">Vinegar Syndrome</span></div><button class="fav-btn" onclick="toggleFav(event,'vinegar')" id="fav-vinegar" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('mould')"  data-search="mould mold biohazard spores ffp2 ffp3 fuzzy">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🦠</span> Mouldy Film (Biohazard)</div><button class="fav-btn" onclick="toggleFav(event,'mould')" id="fav-mould" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🦠</span> <span data-i18n-text="nav.mould">Mouldy Film (Biohazard)</span></div><button class="fav-btn" onclick="toggleFav(event,'mould')" id="fav-mould" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('water')"  data-search="water damage wet sticky emulsion ferrotype drying">
-        <div class="sidebar-item-left"><span class="sidebar-icon">💧</span> Water Damage</div><button class="fav-btn" onclick="toggleFav(event,'water')" id="fav-water" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">💧</span> <span data-i18n-text="nav.water">Water Damage</span></div><button class="fav-btn" onclick="toggleFav(event,'water')" id="fav-water" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('nitrate')"  data-search="nitrate fire flammable 35mm stages decay">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🔥</span> Nitrate Film</div><button class="fav-btn" onclick="toggleFav(event,'nitrate')" id="fav-nitrate" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🔥</span> <span data-i18n-text="nav.nitrate">Nitrate Film</span></div><button class="fav-btn" onclick="toggleFav(event,'nitrate')" id="fav-nitrate" title="Favourite">☆</button>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.sound">Sound</div>
       <div class="sidebar-item" onclick="showView('magnetic')"  data-search="magnetic sound magstripe brown stripe fd1 fd2 mono stereo full coat">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🔊</span> Magnetic Sound</div><button class="fav-btn" onclick="toggleFav(event,'magnetic')" id="fav-magnetic" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🔊</span> <span data-i18n-text="nav.magnetic">Magnetic Sound</span></div><button class="fav-btn" onclick="toggleFav(event,'magnetic')" id="fav-magnetic" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('optical')"  data-search="optical sound variable area density aeolight retroscan wavy line">
-        <div class="sidebar-item-left"><span class="sidebar-icon">〰️</span> Optical Sound</div><button class="fav-btn" onclick="toggleFav(event,'optical')" id="fav-optical" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">〰️</span> <span data-i18n-text="nav.optical">Optical Sound</span></div><button class="fav-btn" onclick="toggleFav(event,'optical')" id="fav-optical" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('sepmag')"  data-search="sepmag separate magnetic two reels full coat sync">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🎙️</span> Sepmag</div><button class="fav-btn" onclick="toggleFav(event,'sepmag')" id="fav-sepmag" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">🎙️</span> <span data-i18n-text="nav.sepmag">Sepmag</span></div><button class="fav-btn" onclick="toggleFav(event,'sepmag')" id="fav-sepmag" title="Favourite">☆</button>
       </div>
       <div class="sidebar-item" onclick="showView('aeolight')"  data-search="aeo light bounding box frame pitch wav extract calibrate">
-        <div class="sidebar-item-left"><span class="sidebar-icon">💻</span> AEO-Light</div><button class="fav-btn" onclick="toggleFav(event,'aeolight')" id="fav-aeolight" title="Favourite">☆</button>
+        <div class="sidebar-item-left"><span class="sidebar-icon">💻</span> <span data-i18n-text="nav.aeolight">AEO-Light</span></div><button class="fav-btn" onclick="toggleFav(event,'aeolight')" id="fav-aeolight" title="Favourite">☆</button>
       </div>
     </div>
     <div class="sidebar-section">
@@ -2882,6 +2882,27 @@ const TRANSLATIONS = {
   'search.placeholder':   { en:'Search handbook...', de:'Handbuch durchsuchen...', fr:'Rechercher...', es:'Buscar...', pl:'Szukaj...' },
   'search.noresults':     { en:'No results found', de:'Keine Ergebnisse', fr:'Aucun résultat', es:'Sin resultados', pl:'Brak wyników' },
   'back.btn':             { en:'Back', de:'Zurück', fr:'Retour', es:'Volver', pl:'Wstecz' },
+  'sidebar.recent':       { en:'Recently Viewed', de:'Zuletzt angesehen', fr:'Récemment visités', es:'Vistos recientemente', pl:'Ostatnio oglądane' },
+  'sidebar.favourites':   { en:'Favourites ⭐', de:'Favoriten ⭐', fr:'Favoris ⭐', es:'Favoritos ⭐', pl:'Ulubione ⭐' },
+  'nav.sheets':           { en:'Sheets', de:'Tabellen', fr:'Feuilles', es:'Hojas', pl:'Arkusze' },
+  'nav.rules':            { en:'Dept. Rules', de:'Abteilungsregeln', fr:'Règles dept.', es:'Reglas dept.', pl:'Zasady działu' },
+  'nav.qr':               { en:'QR Codes', de:'QR-Codes', fr:'Codes QR', es:'Códigos QR', pl:'Kody QR' },
+  'nav.checklist':        { en:'Scan Checklist', de:'Scan-Checkliste', fr:'Liste de contrôle', es:'Lista de verificación', pl:'Lista kontrolna' },
+  'nav.super8': { en:'Super 8', de:'Super 8', fr:'Super 8', es:'Super 8', pl:'Super 8' },
+  'nav.regular8': { en:'Regular 8', de:'Regular 8', fr:'Regular 8', es:'Regular 8', pl:'Regular 8' },
+  'nav.9mm5': { en:'9.5mm Pathé', de:'9,5mm Pathé', fr:'9,5mm Pathé', es:'9,5mm Pathé', pl:'9,5mm Pathé' },
+  'nav.16mm': { en:'16mm', de:'16mm', fr:'16mm', es:'16mm', pl:'16mm' },
+  'nav.35mm': { en:'35mm', de:'35mm', fr:'35mm', es:'35mm', pl:'35mm' },
+  'nav.magnetic': { en:'Magnetic Sound', de:'Magnetton', fr:'Son magnétique', es:'Sonido magnético', pl:'Dźwięk magnetyczny' },
+  'nav.optical': { en:'Optical Sound', de:'Optischer Ton', fr:'Son optique', es:'Sonido óptico', pl:'Dźwięk optyczny' },
+  'nav.sepmag': { en:'Sepmag', de:'Sepmag', fr:'Sepmag', es:'Sepmag', pl:'Sepmag' },
+  'nav.aeolight': { en:'AEO-Light', de:'AEO-Light', fr:'AEO-Light', es:'AEO-Light', pl:'AEO-Light' },
+  'nav.tenite': { en:'Tenite Reel Decay', de:'Tenite-Zerfall', fr:'Dégradation Tenite', es:'Deterioro Tenite', pl:'Rozkład Tenite' },
+  'nav.vinegar': { en:'Vinegar Syndrome', de:'Vinegar Syndrome', fr:'Syndrome du vinaigre', es:'Síndrome del vinagre', pl:'Syndrom octu' },
+  'nav.mould': { en:'Mouldy Film', de:'Schimmelfilm', fr:'Film moisi', es:'Película mohosa', pl:'Spleśniały film' },
+  'nav.water': { en:'Water Damage', de:'Wasserschaden', fr:'Dégâts des eaux', es:'Daños por agua', pl:'Uszkodzenie wodą' },
+  'nav.nitrate': { en:'Nitrate Film', de:'Nitratfilm', fr:'Film nitrate', es:'Película nitrato', pl:'Film nitratowy' },
+  'banner.text':          { en:'Panel content is in English. Use the Assistant to ask in your language.', de:'Inhalt auf Englisch. Nutze den Assistenten für Fragen auf Deutsch.', fr:'Contenu en anglais. Utilisez l\'Assistant pour poser des questions en français.', es:'Contenido en inglés. Usa el Asistente para preguntar en español.', pl:'Treść po angielsku. Użyj Asystenta, aby zadać pytania po polsku.' },
 };
 
 function t(key) {
@@ -2894,11 +2915,14 @@ function applyTranslations() {
   // 1. All elements with data-i18n attribute → set text (innerHTML for banner)
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const val = t(el.dataset.i18n);
-    if (el.dataset.i18n === 'banner.text') {
-      el.innerHTML = val;
-    } else {
-      el.textContent = val;
-    }
+    el.textContent = val;
+  });
+  document.querySelectorAll('[data-i18n-text]').forEach(el => {
+    el.textContent = t(el.dataset.i18nText);
+  });
+  // Update lang-banner spans
+  document.querySelectorAll('.lang-banner [data-i18n]').forEach(el => {
+    el.innerHTML = t(el.dataset.i18n);
   });
 
   // 2. All elements with data-i18n-text attribute (spans inside sidebar items)
@@ -2925,6 +2949,8 @@ function applyTranslations() {
     'input-hint':          'input.hint',
     'no-results':          'search.noresults',
     'back-btn-text':       'back.btn',
+    'recent-section-label':'sidebar.recent',
+    'fav-section-label':   'sidebar.favourites',
   };
   for (const [id, key] of Object.entries(idMap)) {
     const el = document.getElementById(id);
