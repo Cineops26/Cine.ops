@@ -4722,97 +4722,34 @@ window.addEventListener('beforeprint', function() {
 
 // ===== TUTORIAL =====
 const TUTORIAL_STEPS = [
-  {
-    icon: '👋',
-    title: 'Welcome to CineOps!',
-    text: 'This is your <strong>Film Department Handbook</strong> — everything you need to know about film scanning, machines, film types and special cases in one place.<br><br>This quick tour will walk you through all the key sections. It only takes 2 minutes!',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '🧭',
-    title: 'Machine Wizard',
-    text: 'Not sure which scanner to use? The <strong>Machine Wizard</strong> helps you choose the right machine in 3 clicks.<br><br>Simply answer: What format? Does it have sound? What condition is the film in? — and you get an instant recommendation.',
-    highlight: 'nav-wizard',
-    action: null,
-  },
-  {
-    icon: '✅',
-    title: 'Scan Checklist',
-    text: 'The <strong>Scan Checklist</strong> is your step-by-step guide for every scan job. It covers:<br><br>• Pre-production setup<br>• Machine threading check<br>• Active scan monitoring<br>• Completion and QA<br><br>You can also <strong>print it</strong> and keep it at your workstation.',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '🎞️',
-    title: 'Machines',
-    text: 'Under <strong>Machines</strong> you will find complete operating manuals for all three scanners:<br><br>• <strong>MMT Scanner</strong> — best quality, up to 5.5K<br>• <strong>RetroScan</strong> — gentle on old/damaged film<br>• <strong>Film-Digital (FD)</strong> — fastest, for C3 reels and magnetic sound',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '🎬',
-    title: 'Film Types',
-    text: 'Not sure what film you are holding? The <strong>Film Types</strong> section covers all formats:<br><br>• Super 8, Regular 8, 9.5mm Pathé<br>• 16mm, 35mm<br><br>Each page explains how to identify the format, what scanner to use, and how to handle it correctly.',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '🔍',
-    title: 'Film ID Guide',
-    text: 'The <strong>Film ID Guide</strong> is a quick visual reference. Answer 4 simple questions about the film in your hand and instantly identify the format — including whether it has sound and which machine to use.',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '🔊',
-    title: 'Sound',
-    text: 'The <strong>Sound</strong> section covers everything about audio on film:<br><br>• <strong>Magnetic Sound</strong> — brown stripe on the edge (FD2 for Super 8)<br>• <strong>Optical Sound</strong> — wavy line next to frames (RetroScan + AEO-Light)<br>• <strong>Sepmag</strong> — picture and sound on two separate reels<br>• <strong>AEO-Light</strong> — step-by-step guide to extract optical sound',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '⚠️',
-    title: 'Special Cases',
-    text: 'The <strong>Special Cases</strong> section covers hazardous and damaged film — critical knowledge for every technician:<br><br>• <strong>Vinegar Syndrome</strong> — chemical decay, PPE required<br>• <strong>Mouldy Film</strong> — biohazard, NEVER put through a machine<br>• <strong>Nitrate Film</strong> — highly flammable, 35mm only<br>• <strong>Water Damage</strong> — fragile emulsion, handle with extreme care',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '📋',
-    title: 'House Rules',
-    text: 'The <strong>House Rules</strong> section contains the 10 department rules that apply to everyone.<br><br>You can switch the language of the rules using the flag buttons — available in English, German, French, Spanish and Polish.',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '💬',
-    title: 'Assistant',
-    text: 'The <strong>Assistant</strong> is your personal expert. Ask any question about film scanning — in any language — and get an instant answer based on the handbook.<br><br>Try asking: <em>"How do I thread the MMT?"</em> or <em>"I can smell vinegar — what do I do?"</em>',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '📸',
-    title: 'Photos & Notes',
-    text: 'On every page you can:<br><br>• <strong>Add photos</strong> — upload your own images relevant to that topic (stored locally in your browser)<br>• <strong>Add personal notes</strong> — write and save notes per page<br>• <strong>Print</strong> any page using the 🖨️ button',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '⭐',
-    title: 'Favourites & Recent',
-    text: 'Use the <strong>☆ star icon</strong> next to any item in the sidebar to save it as a favourite — for quick access to the pages you use most.<br><br>The <strong>Recently Viewed</strong> section automatically tracks your last 5 visited pages.',
-    highlight: null,
-    action: null,
-  },
-  {
-    icon: '🎉',
-    title: 'You are all set!',
-    text: 'That is everything! You now know your way around CineOps.<br><br>If you ever need a reminder, just click the <strong>🎓 Tutorial</strong> button in the top bar to run through this guide again.<br><br>Good luck — and handle those films with care! 🎞️',
-    highlight: null,
-    action: 'finish',
-  },
+  { icon: '👋', title: 'Welcome to CineOps!',
+    text: 'This is your <strong>Film Department Handbook</strong> — everything you need to know about film scanning, machines, film types and special cases in one place.<br><br>This quick tour will walk you through all the key sections. It only takes 2 minutes!', highlight: null, action: null },
+  { icon: '🧭', title: 'Machine Wizard',
+    text: 'Not sure which scanner to use? The <strong>Machine Wizard</strong> helps you choose the right machine in 3 clicks.<br><br>Simply answer: What format? Does it have sound? What condition is the film in? — and you get an instant recommendation.', highlight: null, action: null },
+  { icon: '✅', title: 'Scan Checklist',
+    text: 'The <strong>Scan Checklist</strong> is your step-by-step guide for every scan job. It covers pre-production setup, machine threading, active scan monitoring and completion QA.<br><br>You can also <strong>print it</strong> and keep it at your workstation.', highlight: null, action: null },
+  { icon: '🎞️', title: 'Machines',
+    text: 'Under <strong>Machines</strong> you will find complete operating manuals for all three scanners:<br><br>• <strong>MMT Scanner</strong> — best quality, up to 5.5K<br>• <strong>RetroScan</strong> — gentle on old/damaged film<br>• <strong>Film-Digital (FD)</strong> — fastest, for C3 reels and magnetic sound', highlight: null, action: null },
+  { icon: '🎬', title: 'Film Types',
+    text: 'Not sure what film you are holding? The <strong>Film Types</strong> section covers all formats:<br><br>• Super 8, Regular 8, 9.5mm Pathé<br>• 16mm, 35mm<br><br>Each page explains how to identify the format, what scanner to use, and how to handle it correctly.', highlight: null, action: null },
+  { icon: '🔍', title: 'Film ID Guide',
+    text: 'The <strong>Film ID Guide</strong> is a quick visual reference. Answer a few simple questions about the film in your hand and instantly identify the format — including whether it has sound and which machine to use.', highlight: null, action: null },
+  { icon: '🔊', title: 'Sound',
+    text: 'The <strong>Sound</strong> section covers everything about audio on film:<br><br>• <strong>Magnetic Sound</strong> — brown stripe on the edge (FD2 for Super 8)<br>• <strong>Optical Sound</strong> — wavy line next to frames (RetroScan + AEO-Light)<br>• <strong>Sepmag</strong> — picture and sound on two separate reels<br>• <strong>AEO-Light</strong> — step-by-step guide to extract optical sound', highlight: null, action: null },
+  { icon: '⚠️', title: 'Special Cases',
+    text: 'The <strong>Special Cases</strong> section covers hazardous and damaged film — critical knowledge for every technician:<br><br>• <strong>Vinegar Syndrome</strong> — chemical decay, PPE required<br>• <strong>Mouldy Film</strong> — biohazard, NEVER through a machine<br>• <strong>Nitrate Film</strong> — highly flammable, 35mm only<br>• <strong>Water Damage</strong> — fragile emulsion, extreme care', highlight: null, action: null },
+  { icon: '📋', title: 'House Rules',
+    text: 'The <strong>House Rules</strong> section contains the 10 department rules that apply to everyone.<br><br>You can switch the language of the rules using the flag buttons — available in English, German, French, Spanish and Polish.', highlight: null, action: null },
+  { icon: '💬', title: 'Assistant',
+    text: 'The <strong>Assistant</strong> is your personal expert. Ask any question about film scanning — in any language — and get an instant answer based on the handbook.<br><br>Try asking: <em>How do I thread the MMT?</em> or <em>I can smell vinegar — what do I do?</em>', highlight: null, action: null },
+  { icon: '📸', title: 'Photos and Notes',
+    text: 'On every page you can:<br><br>• <strong>Add photos</strong> — upload your own images for that topic (stored locally in your browser)<br>• <strong>Add personal notes</strong> — write and save notes per page<br>• <strong>Print</strong> any page using the 🖨️ button', highlight: null, action: null },
+  { icon: '⭐', title: 'Favourites and Recent',
+    text: 'Use the <strong>star icon</strong> next to any item in the sidebar to save it as a favourite — for quick access to the pages you use most.<br><br>The <strong>Recently Viewed</strong> section automatically tracks your last 5 visited pages.', highlight: null, action: null },
+  { icon: '🚨', title: 'When to Contact Leadership',
+    text: 'Always stop and inform leadership immediately in these situations:<br><br>• 🔥 <strong>Nitrate Film</strong> — before any scan, no exceptions<br>• ⚠️ <strong>Vinegar Stage 3</strong> or film keeps tearing — stop the scan<br>• 🦠 <strong>Mouldy Film</strong> — never through any machine without approval<br>• 💧 <strong>Water damage with blocking</strong> — do not scan<br>• 🎞️ <strong>Unknown format or damage</strong> — do not guess, ask first<br>• 📋 <strong>Deviation from job order</strong> — per House Rule 9<br>• ⚡ <strong>Machine behaves abnormally</strong> — stop and report immediately', highlight: null, action: null },
+  { icon: '🎉', title: 'You are all set!',
+    text: 'That is everything! You now know your way around CineOps.<br><br>If you ever need a reminder, just click the <strong>Tutorial</strong> button in the top bar to run through this guide again.<br><br>Good luck — and handle those films with care!', highlight: null, action: 'finish' },
 ];
 
 let tutStep = 0;
@@ -4874,11 +4811,8 @@ function renderTutorialStep() {
 }
 
 function initTutorial() {
-  const done = localStorage.getItem('cineops_tutorial_done');
-  if (!done) {
-    // Auto-start for first-time visitors after 1.5s
-    setTimeout(startTutorial, 1500);
-  }
+  // Tutorial only starts when user clicks the button
+  // No auto-start
 }
 
 
