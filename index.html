@@ -1195,32 +1195,32 @@
           Ask anything — in any language.
         </div>
         <div class="quick-topics">
-          <div class="quick-card" id="card-mmt" onclick="askQuestion('How do I thread the MMT Scanner and start a scan?')">
+          <div class="quick-card" id="card-mmt" onclick="showView('mmt')">
             <div class="quick-card-icon">🎞️</div>
             <div class="quick-card-title" id="card-mmt-title">MMT Scanner</div>
             <div class="quick-card-desc" id="card-mmt-desc">Threading, software setup & starting a scan</div>
           </div>
-          <div class="quick-card" id="card-retroscan" onclick="askQuestion('How do I set up the RetroScan and export correctly?')">
+          <div class="quick-card" id="card-retroscan" onclick="showView('retroscan')">
             <div class="quick-card-icon">📽️</div>
             <div class="quick-card-title" id="card-retroscan-title">RetroScan (Movistuff)</div>
             <div class="quick-card-desc" id="card-retroscan-desc">Hardware, software & overnight export</div>
           </div>
-          <div class="quick-card" id="card-fd" onclick="askQuestion('What is the Film-Digital machine used for and which films can I scan with it?')">
+          <div class="quick-card" id="card-fd" onclick="showView('fd')">
             <div class="quick-card-icon">⚡</div>
             <div class="quick-card-title" id="card-fd-title">Film-Digital (FD)</div>
             <div class="quick-card-desc" id="card-fd-desc">Magnetic sound, ghost frames & C3 reels</div>
           </div>
-          <div class="quick-card" id="card-filmtypes" onclick="askQuestion('I have an 8mm film – how do I identify the type and which machine should I use?')">
+          <div class="quick-card" id="card-filmtypes" onclick="showView('filmid')">
             <div class="quick-card-icon">🎬</div>
             <div class="quick-card-title" id="card-filmtypes-title">Identify Film Types</div>
             <div class="quick-card-desc" id="card-filmtypes-desc">Super 8, Regular 8, 9.5mm, 16mm, 35mm</div>
           </div>
-          <div class="quick-card" id="card-special" onclick="askQuestion('I smell vinegar on a film – what do I do? What is Tenite Reel Decay and how do I identify mould?')">
+          <div class="quick-card" id="card-special" onclick="showView('vinegar')">
             <div class="quick-card-icon">⚠️</div>
             <div class="quick-card-title" id="card-special-title">Special Cases & Damage</div>
             <div class="quick-card-desc" id="card-special-desc">Tenite, Vinegar, Mould, Water, Nitrate</div>
           </div>
-          <div class="quick-card" id="card-sound" onclick="askQuestion('How do I identify magnetic and optical sound and which machine digitizes it?')">
+          <div class="quick-card" id="card-sound" onclick="showView('magnetic')">
             <div class="quick-card-icon">🔊</div>
             <div class="quick-card-title" id="card-sound-title">Sound Types & Workflow</div>
             <div class="quick-card-desc" id="card-sound-desc">Magnetic, Optical Sound, Sepmag & AEO-Light</div>
@@ -4811,8 +4811,7 @@ function renderTutorialStep() {
 }
 
 function initTutorial() {
-  // Tutorial only starts when user clicks the button
-  // No auto-start
+  // Tutorial only starts on button click
 }
 
 
