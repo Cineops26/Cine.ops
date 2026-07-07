@@ -4756,12 +4756,16 @@ let tutStep = 0;
 
 function startTutorial() {
   tutStep = 0;
-  document.getElementById('tutorial-overlay').classList.add('visible');
+  const overlay = document.getElementById('tutorial-overlay');
+  overlay.style.removeProperty('display');
+  overlay.classList.add('visible');
   renderTutorialStep();
 }
 
 function endTutorial() {
-  document.getElementById('tutorial-overlay').classList.remove('visible');
+  const overlay = document.getElementById('tutorial-overlay');
+  overlay.classList.remove('visible');
+  overlay.style.display = 'none';
   localStorage.setItem('cineops_tutorial_done', '1');
 }
 
@@ -5095,7 +5099,7 @@ checkNotifications();
 </div>
 
 <!-- TUTORIAL OVERLAY -->
-<div class="tutorial-overlay" id="tutorial-overlay">
+<div class="tutorial-overlay" id="tutorial-overlay" style="display:none!important">
   <div class="tutorial-box">
     <div class="tutorial-header">
       <div class="tutorial-header-left">
