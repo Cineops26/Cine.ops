@@ -2297,18 +2297,20 @@
 
     <!-- WIZARD PANEL -->
     <div class="wiki-panel wizard-panel" id="view-wizard">
-      <h2>🧭 Machine Wizard</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
-      <p style="color:var(--text-mid);font-size:0.875rem;margin-bottom:1.5rem;">Answer 3 quick questions to find the right scanner for your film.</p>
+      <h2>🧭 Machine Wizard</h2>
+      <button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
+      <p style="color:var(--text-mid);font-size:0.875rem;margin-bottom:1.5rem;">Answer the questions below to find the right scanner for your film.</p>
 
       <div class="wizard-progress">
         <div class="wizard-dot" id="wd0"></div>
         <div class="wizard-dot" id="wd1"></div>
         <div class="wizard-dot" id="wd2"></div>
+        <div class="wizard-dot" id="wd3"></div>
       </div>
 
-      <!-- Step 1: Format -->
+      <!-- Step 1: Format group -->
       <div class="wizard-step active" id="ws1">
-        <div class="wizard-question">1 · What format is the film?</div>
+        <div class="wizard-question">1 · What is the film format?</div>
         <div class="wizard-options">
           <div class="wizard-option" onclick="wizardNext(1,'8mm')">
             <span class="opt-icon">🎬</span>
@@ -2333,65 +2335,54 @@
         </div>
       </div>
 
-      <!-- Step 2: Sound? -->
+      <!-- Step 2: 8mm subtype (only shown for 8mm) -->
       <div class="wizard-step" id="ws2">
-        <div class="wizard-question">2 · Does the film have a soundtrack?</div>
+        <div class="wizard-question">2 · Which type of 8mm?</div>
         <div class="wizard-options">
-          <div class="wizard-option" onclick="wizardNext(2,'sound-mag')">
-            <span class="opt-icon">🟫</span>
-            <div class="opt-title">Yes — Magnetic</div>
-            <div class="opt-desc">Dark brown stripe on edge</div>
+          <div class="wizard-option" onclick="wizardNext(2,'super8')">
+            <span class="opt-icon">🎬</span>
+            <div class="opt-title">Super 8</div>
+            <div class="opt-desc">Small perforations · Kodak 1965</div>
           </div>
-          <div class="wizard-option" onclick="wizardNext(2,'sound-opt')">
-            <span class="opt-icon">〰️</span>
-            <div class="opt-title">Yes — Optical</div>
-            <div class="opt-desc">Wavy line next to frames</div>
-          </div>
-          <div class="wizard-option" onclick="wizardNext(2,'silent')">
-            <span class="opt-icon">🔇</span>
-            <div class="opt-title">Silent</div>
-            <div class="opt-desc">No sound track at all</div>
-          </div>
-          <div class="wizard-option" onclick="wizardNext(2,'unknown')">
-            <span class="opt-icon">❓</span>
-            <div class="opt-title">Not sure</div>
-            <div class="opt-desc">I can't tell</div>
+          <div class="wizard-option" onclick="wizardNext(2,'regular8')">
+            <span class="opt-icon">🎬</span>
+            <div class="opt-title">Regular 8</div>
+            <div class="opt-desc">Large perforations · 1930s</div>
           </div>
         </div>
       </div>
 
-      <!-- Step 3: Condition -->
+      <!-- Step 3: Sound -->
       <div class="wizard-step" id="ws3">
-        <div class="wizard-question">3 · What is the condition of the film?</div>
+        <div class="wizard-question" id="ws3-question">3 · Does the film have a soundtrack?</div>
+        <div class="wizard-options" id="ws3-options"></div>
+      </div>
+
+      <!-- Step 4: Condition -->
+      <div class="wizard-step" id="ws4">
+        <div class="wizard-question">4 · What is the condition of the film?</div>
         <div class="wizard-options">
-          <div class="wizard-option" onclick="wizardNext(3,'good')">
+          <div class="wizard-option" onclick="wizardNext(4,'good')">
             <span class="opt-icon">✅</span>
             <div class="opt-title">Good</div>
             <div class="opt-desc">Clean, flat, no damage</div>
           </div>
-          <div class="wizard-option" onclick="wizardNext(3,'aged')">
+          <div class="wizard-option" onclick="wizardNext(4,'aged')">
             <span class="opt-icon">🟡</span>
             <div class="opt-title">Aged / Slightly Damaged</div>
             <div class="opt-desc">Some splices or brittleness</div>
           </div>
-          <div class="wizard-option" onclick="wizardNext(3,'vinegar')">
+          <div class="wizard-option" onclick="wizardNext(4,'vinegar')">
             <span class="opt-icon">⚠️</span>
             <div class="opt-title">Vinegar Smell / Warped</div>
             <div class="opt-desc">Vinegar Syndrome</div>
-          </div>
-          <div class="wizard-option" onclick="wizardNext(3,'priority')">
-            <span class="opt-icon">⚡</span>
-            <div class="opt-title">Rush / High Volume</div>
-            <div class="opt-desc">C3 reels, speed priority</div>
           </div>
         </div>
       </div>
 
       <!-- Result -->
       <div class="wizard-step" id="ws-result">
-        <div class="wizard-result" id="wizard-result-box">
-          <!-- filled by JS -->
-        </div>
+        <div class="wizard-result" id="wizard-result-box"></div>
         <button class="wizard-restart" onclick="wizardRestart()">↩ Start over</button>
       </div>
     </div>
@@ -3779,132 +3770,148 @@ let wizardStep = 1;
 
 const WIZARD_RESULTS = {
 
-  // ── 35mm ─────────────────────────────────────────────────────
-  // 35mm skips sound+condition steps entirely
-  '35mm': { machine: 'RetroScan', icon: '📽️',
-    reason: '35mm can only be scanned on the RetroScan. Always check for "NITRATE" printed on the film edge before starting.',
-    warn: '🔥 Check for Nitrate Film first!' },
+  // ── 9.5mm ─────────────────────────────────────────────────
+  // RetroScan only (silent or optical)
+  '9.5mm+silent+good':   { machine:'RetroScan', icon:'📽️', reason:'9.5mm Pathé silent in good condition scans on the RetroScan. Handle with extreme care — the central perforation tears easily.', warn:'⚠️ Cotton gloves mandatory. Rewind slowly.' },
+  '9.5mm+silent+aged':   { machine:'RetroScan', icon:'📽️', reason:'Aged 9.5mm goes on the RetroScan — sprocket-less transport is gentle on old film. Cotton gloves mandatory.', warn:'⚠️ Inspect every splice before mounting.' },
+  '9.5mm+silent+vinegar':{ machine:'RetroScan (Scan Slow)', icon:'⚠️', reason:'Vinegar Syndrome 9.5mm: RetroScan only, Scan Slow enabled, F5.6, 2K. Clean machine thoroughly after.', warn:'⚠️ PPE required. Consult leadership first.' },
+  '9.5mm+optical+good':  { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'9.5mm with optical sound: scan on RetroScan, then extract audio with AEO-Light.', warn:'⚠️ Central perf is fragile — handle with care.' },
+  '9.5mm+optical+aged':  { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'Aged 9.5mm with optical: RetroScan for gentle handling, then AEO-Light for audio.', warn:'⚠️ Inspect before scanning.' },
+  '9.5mm+optical+vinegar':{ machine:'Consult Leadership', icon:'🚨', reason:'Vinegar Syndrome + optical sound on 9.5mm: high risk. Consult leadership before any attempt.', warn:'⚠️ PPE required. Do not scan without approval.' },
 
-  // ── 9.5mm ─────────────────────────────────────────────────────
-  // 9.5mm skips sound+condition steps entirely
-  '9.5mm': { machine: 'MMT or RetroScan', icon: '🎞️',
-    reason: '9.5mm Pathé uses a single central perforation between frames. Both MMT and RetroScan support this format. Handle with extreme care — the central perf tears easily.',
-    warn: '⚠️ Cotton gloves mandatory. Rewind slowly.' },
+  // ── 35mm ─────────────────────────────────────────────────
+  // RetroScan only
+  '35mm+silent+good':    { machine:'RetroScan', icon:'📽️', reason:'35mm silent in good condition: RetroScan only. Always check for NITRATE on the film edge first.', warn:'🔥 Check for Nitrate Film before starting!' },
+  '35mm+silent+aged':    { machine:'RetroScan', icon:'📽️', reason:'Aged 35mm: RetroScan only. Inspect every splice. Check for Nitrate.', warn:'🔥 Nitrate check mandatory.' },
+  '35mm+silent+vinegar': { machine:'Consult Leadership', icon:'🚨', reason:'Vinegar Syndrome on 35mm is high risk. Consult leadership before scanning.', warn:'⚠️ PPE required.' },
+  '35mm+optical+good':   { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'35mm with optical sound: scan on RetroScan, extract audio with AEO-Light. Check for Nitrate first.', warn:'🔥 Nitrate check mandatory!' },
+  '35mm+optical+aged':   { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'Aged 35mm optical: RetroScan + AEO-Light. Inspect carefully before loading.', warn:'🔥 Nitrate check mandatory.' },
+  '35mm+optical+vinegar':{ machine:'Consult Leadership', icon:'🚨', reason:'Vinegar + optical on 35mm: consult leadership before any attempt.', warn:'⚠️ PPE required. Do not scan without approval.' },
 
-  // ── 16mm + Magnetic Sound ────────────────────────────────────
-  '16mm+sound-mag': { machine: 'Film-Digital (FD)', icon: '⚡',
-    reason: '16mm with magnetic sound must go on the Film-Digital machine. Only FD can capture the magnetic audio track.',
-    warn: null },
+  // ── 16mm ─────────────────────────────────────────────────
+  // MMT: silent or optical
+  // RetroScan: silent or optical
+  // FD: NOT for 16mm
+  '16mm+silent+good':    { machine:'MMT or RetroScan', icon:'🎞️', reason:'Silent 16mm in good condition: MMT for best quality output, RetroScan for gentle handling and speed.', warn: null },
+  '16mm+silent+aged':    { machine:'RetroScan', icon:'📽️', reason:'Aged 16mm: RetroScan — sprocket-less transport is safest for worn or brittle film.', warn: null },
+  '16mm+silent+vinegar': { machine:'RetroScan (Scan Slow)', icon:'⚠️', reason:'Vinegar Syndrome 16mm: RetroScan only, Scan Slow, F5.6, 2K. Clean machine thoroughly after.', warn:'⚠️ PPE required. Consult leadership.' },
+  '16mm+optical+good':   { machine:'MMT or RetroScan + AEO-Light', icon:'🎞️', reason:'16mm with optical sound: scan on MMT or RetroScan, then extract audio with AEO-Light. Optical sound on 16mm sits 26 frames ahead of picture.', warn:'💡 Set 26-frame offset in AEO-Light.' },
+  '16mm+optical+aged':   { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'Aged 16mm optical: RetroScan for gentle handling, then AEO-Light for audio extraction.', warn:'💡 Set 26-frame offset in AEO-Light.' },
+  '16mm+optical+vinegar':{ machine:'Consult Leadership', icon:'🚨', reason:'Vinegar Syndrome + optical sound on 16mm: high risk combination. Consult leadership before scanning.', warn:'⚠️ PPE required.' },
 
-  // ── 16mm + Optical Sound ─────────────────────────────────────
-  '16mm+sound-opt': { machine: 'RetroScan + AEO-Light', icon: '📽️',
-    reason: 'Scan on RetroScan first, then extract the audio with AEO-Light. Important: optical sound on 16mm sits 26 frames ahead of the picture.',
-    warn: '💡 Set 26-frame offset in AEO-Light.' },
+  // ── SUPER 8 ───────────────────────────────────────────────
+  // FD2: super 8 only — magnetic or silent
+  // MMT: super 8 — silent only
+  // RetroScan: super 8 — silent or optical
+  'super8+magnetic+good':   { machine:'Film-Digital FD2', icon:'⚡', reason:'Super 8 with magnetic sound: FD2 is the only machine that can capture the magnetic audio track on Super 8.', warn:'🔊 Check for shedding (brown dust) — stop immediately if present.' },
+  'super8+magnetic+aged':   { machine:'Film-Digital FD2', icon:'⚡', reason:'Aged Super 8 with magnetic: FD2 only for magnetic capture. Inspect film carefully before loading — sprocket transport is sensitive.', warn:'🔊 Check for shedding. Inspect splices first.' },
+  'super8+magnetic+vinegar':{ machine:'Consult Leadership', icon:'🚨', reason:'Vinegar Syndrome + magnetic sound on Super 8: the FD2 transport is too aggressive for degraded film. Consult leadership.', warn:'⚠️ PPE required. Do not scan without approval.' },
+  'super8+optical+good':    { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'Super 8 with optical sound: scan on RetroScan (gentle transport), then extract audio with AEO-Light.', warn: null },
+  'super8+optical+aged':    { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'Aged Super 8 optical: RetroScan for gentle handling, then AEO-Light for audio.', warn: null },
+  'super8+optical+vinegar': { machine:'RetroScan (Scan Slow)', icon:'⚠️', reason:'Vinegar Syndrome Super 8 with optical: RetroScan Scan Slow, F5.6, 2K. Extract audio with AEO-Light after.', warn:'⚠️ PPE required. Consult leadership.' },
+  'super8+silent+good':     { machine:'MMT or RetroScan', icon:'🎞️', reason:'Silent Super 8 in good condition: MMT for best quality, RetroScan for gentle/faster handling.', warn: null },
+  'super8+silent+aged':     { machine:'RetroScan', icon:'📽️', reason:'Aged silent Super 8: RetroScan — sprocket-less transport is safest for worn or brittle film.', warn: null },
+  'super8+silent+vinegar':  { machine:'RetroScan (Scan Slow)', icon:'⚠️', reason:'Vinegar Syndrome Super 8 silent: RetroScan only, Scan Slow, F5.6, 2K. Clean machine thoroughly after.', warn:'⚠️ PPE required: gloves + organic vapour mask.' },
 
-  // ── 16mm + Silent ────────────────────────────────────────────
-  '16mm+silent+good': { machine: 'MMT or RetroScan', icon: '🎞️',
-    reason: 'Silent 16mm in good condition: use MMT for best quality output, or RetroScan for faster throughput. Both handle this format well.',
-    warn: null },
-  '16mm+silent+aged': { machine: 'RetroScan', icon: '📽️',
-    reason: 'Aged or slightly damaged 16mm is safest on the RetroScan — sprocket-less transport is gentle on brittle splices and worn film.',
-    warn: null },
-  '16mm+silent+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️',
-    reason: 'Vinegar Syndrome 16mm: ONLY RetroScan Universal Mark II 4K. Enable Scan Slow, aperture F5.6, scan in 2K. Clean machine thoroughly afterwards.',
-    warn: '⚠️ PPE required: gloves + organic vapour mask. Consult leadership before scanning.' },
-  '16mm+silent+priority': { machine: 'RetroScan or MMT', icon: '🎞️',
-    reason: 'For high-volume silent 16mm C3 reels: RetroScan for speed and gentle handling, or MMT if quality is the priority.',
-    warn: null },
-
-  // ── 16mm + Unknown Sound ─────────────────────────────────────
-  '16mm+unknown+good': { machine: 'Inspect first', icon: '🔍',
-    reason: 'Check the film edge: brown stripe = magnetic (→ Film-Digital). Wavy line next to frames = optical (→ RetroScan + AEO-Light). Nothing = silent (→ MMT or RetroScan).',
-    warn: null },
-  '16mm+unknown+aged': { machine: 'Inspect, then RetroScan', icon: '📽️',
-    reason: 'Inspect for sound track first. Regardless of result, aged 16mm is safest on RetroScan — unless magnetic sound is present, which requires Film-Digital.',
-    warn: null },
-  '16mm+unknown+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️',
-    reason: 'Vinegar Syndrome takes priority over sound type. Use RetroScan with Scan Slow, F5.6, 2K. If magnetic sound is present, do not scan — consult leadership.',
-    warn: '⚠️ PPE required. Consult leadership before scanning.' },
-  '16mm+unknown+priority': { machine: 'Inspect first', icon: '🔍',
-    reason: 'Check sound track before deciding. Silent C3 → RetroScan or MMT. Magnetic → Film-Digital. Optical → RetroScan + AEO-Light.',
-    warn: null },
-
-  // ── 8mm + Magnetic Sound ─────────────────────────────────────
-  '8mm+sound-mag': { machine: 'Film-Digital FD2', icon: '⚡',
-    reason: 'Super 8 with magnetic sound requires the Film-Digital FD2. Only this machine can capture the magnetic audio track.',
-    warn: '🔊 Check for shedding (brown dust on the heads) — stop immediately if present.' },
-
-  // ── 8mm + Optical Sound ──────────────────────────────────────
-  '8mm+sound-opt': { machine: 'RetroScan + AEO-Light', icon: '📽️',
-    reason: 'Scan on RetroScan first, then extract the optical sound using AEO-Light.',
-    warn: null },
-
-  // ── 8mm + Silent ─────────────────────────────────────────────
-  '8mm+silent+good': { machine: 'MMT or Film-Digital', icon: '🎞️',
-    reason: 'Silent 8mm in good condition: use MMT for best quality, or Film-Digital for high-volume C3 reels. Both handle this well.',
-    warn: null },
-  '8mm+silent+aged': { machine: 'RetroScan', icon: '📽️',
-    reason: 'Aged or slightly damaged 8mm is safest on the RetroScan — sprocket-less transport is gentle on old splices and brittle film.',
-    warn: null },
-  '8mm+silent+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️',
-    reason: 'Vinegar Syndrome 8mm: ONLY RetroScan Universal Mark II 4K. Enable Scan Slow, aperture F5.6, scan in 2K. Clean machine thoroughly afterwards.',
-    warn: '⚠️ PPE required: gloves + organic vapour mask. Open can away from face.' },
-  '8mm+silent+priority': { machine: 'Film-Digital (FD)', icon: '⚡',
-    reason: 'For high-volume silent 8mm C3 reels: use Film-Digital (18–24 fps). Strictly triage C3 only — inspect for damage before loading.',
-    warn: '⚡ Clean film before scanning. Ghost-frame issue confirmed — monitor actively.' },
-
-  // ── 8mm + Unknown Sound ──────────────────────────────────────
-  '8mm+unknown+good': { machine: 'Inspect first', icon: '🔍',
-    reason: 'Check the film edge: brown stripe = magnetic (→ FD2). Wavy line = optical (→ RetroScan + AEO-Light). Nothing visible = treat as silent (→ MMT or Film-Digital).',
-    warn: null },
-  '8mm+unknown+aged': { machine: 'Inspect, then RetroScan', icon: '📽️',
-    reason: 'Inspect for sound track first. Regardless of result, aged 8mm is safest on RetroScan — unless magnetic sound is present (→ FD2).',
-    warn: null },
-  '8mm+unknown+vinegar': { machine: 'RetroScan (Scan Slow)', icon: '⚠️',
-    reason: 'Vinegar Syndrome takes priority. Use RetroScan with Scan Slow, F5.6, 2K. PPE required.',
-    warn: '⚠️ Consult leadership before scanning.' },
-  '8mm+unknown+priority': { machine: 'Inspect, then Film-Digital', icon: '⚡',
-    reason: 'Check for sound track first. If clearly silent C3: Film-Digital. If magnetic: FD2. If uncertain: inspect before committing.',
-    warn: null },
+  // ── REGULAR 8 ─────────────────────────────────────────────
+  // FD1: regular 8 only — magnetic or silent
+  // MMT: regular 8 — silent only
+  // RetroScan: regular 8 — silent or optical
+  'regular8+magnetic+good':   { machine:'Film-Digital FD1', icon:'⚡', reason:'Regular 8 with magnetic sound: FD1 is the only machine that can capture the magnetic audio track on Regular 8.', warn:'🔊 Check for shedding (brown dust) — stop immediately if present.' },
+  'regular8+magnetic+aged':   { machine:'Film-Digital FD1', icon:'⚡', reason:'Aged Regular 8 with magnetic: FD1 only. Inspect film carefully before loading.', warn:'🔊 Check for shedding. Inspect splices first.' },
+  'regular8+magnetic+vinegar':{ machine:'Consult Leadership', icon:'🚨', reason:'Vinegar Syndrome + magnetic sound on Regular 8: FD1 transport too aggressive for degraded film. Consult leadership.', warn:'⚠️ PPE required. Do not scan without approval.' },
+  'regular8+optical+good':    { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'Regular 8 with optical sound: scan on RetroScan, then extract audio with AEO-Light.', warn: null },
+  'regular8+optical+aged':    { machine:'RetroScan + AEO-Light', icon:'📽️', reason:'Aged Regular 8 optical: RetroScan for gentle handling, then AEO-Light for audio.', warn: null },
+  'regular8+optical+vinegar': { machine:'RetroScan (Scan Slow)', icon:'⚠️', reason:'Vinegar Syndrome Regular 8 optical: RetroScan Scan Slow, F5.6, 2K. AEO-Light after.', warn:'⚠️ PPE required. Consult leadership.' },
+  'regular8+silent+good':     { machine:'MMT or RetroScan', icon:'🎞️', reason:'Silent Regular 8 in good condition: MMT for best quality, RetroScan for gentle/faster handling.', warn: null },
+  'regular8+silent+aged':     { machine:'RetroScan', icon:'📽️', reason:'Aged silent Regular 8: RetroScan — sprocket-less transport safest for worn or brittle film.', warn: null },
+  'regular8+silent+vinegar':  { machine:'RetroScan (Scan Slow)', icon:'⚠️', reason:'Vinegar Syndrome Regular 8 silent: RetroScan only, Scan Slow, F5.6, 2K. Clean machine after.', warn:'⚠️ PPE required: gloves + organic vapour mask.' },
+  'regular8+silent+aged':     { machine:'RetroScan', icon:'📽️', reason:'Aged silent Regular 8: RetroScan — sprocket-less transport safest for worn or brittle film.', warn: null },
+  'regular8+silent+vinegar':  { machine:'RetroScan (Scan Slow)', icon:'⚠️', reason:'Vinegar Syndrome Regular 8 silent: RetroScan only, Scan Slow, F5.6, 2K. Clean machine after.', warn:'⚠️ PPE required: gloves + organic vapour mask.' },
 
 };
 
 function wizardNext(step, answer) {
   wizardAnswers[step] = answer;
-  document.getElementById('wd' + (step-1)).classList.add('done');
+  var dotIdx = step - 1;
+  var dot = document.getElementById('wd' + dotIdx);
+  if (dot) dot.classList.add('done');
 
   if (step === 1) {
-    const fmt = answer;
-    // 35mm and 9.5mm skip sound + condition steps
-    if (fmt === '35mm' || fmt === '9.5mm') {
-      wizardAnswers[2] = 'na'; wizardAnswers[3] = 'na';
-      document.getElementById('wd1').classList.add('done');
-      document.getElementById('wd2').classList.add('done');
-      showWizardResult(fmt);
-      return;
-    }
+    // Format selected
     document.getElementById('ws1').classList.remove('active');
-    document.getElementById('ws2').classList.add('active');
-
-  } else if (step === 2) {
-    document.getElementById('ws2').classList.remove('active');
-    // Magnetic or optical → skip condition step (machine is determined by sound alone)
-    if (answer === 'sound-mag' || answer === 'sound-opt') {
-      wizardAnswers[3] = 'na';
-      document.getElementById('wd2').classList.add('done');
-      showWizardResult(wizardAnswers[1] + '+' + answer);
+    if (answer === '8mm') {
+      // Need to know Super 8 or Regular 8
+      document.getElementById('ws2').classList.add('active');
     } else {
-      // silent or unknown → need condition
+      // 9.5mm, 16mm, 35mm — go to sound step
+      buildSoundOptions(answer);
       document.getElementById('ws3').classList.add('active');
     }
 
+  } else if (step === 2) {
+    // 8mm subtype selected (super8 or regular8)
+    document.getElementById('ws2').classList.remove('active');
+    buildSoundOptions(answer);
+    document.getElementById('ws3').classList.add('active');
+
   } else if (step === 3) {
-    document.getElementById('wd2').classList.add('done');
+    // Sound selected
     document.getElementById('ws3').classList.remove('active');
-    const key = wizardAnswers[1] + '+' + wizardAnswers[2] + '+' + answer;
+    var dot2 = document.getElementById('wd2');
+    if (dot2) dot2.classList.add('done');
+    document.getElementById('ws4').classList.add('active');
+
+  } else if (step === 4) {
+    // Condition selected
+    document.getElementById('ws4').classList.remove('active');
+    var dot3 = document.getElementById('wd3');
+    if (dot3) dot3.classList.add('done');
+    // Build key: format+sound+condition
+    // format is either wizardAnswers[2] (if 8mm) or wizardAnswers[1]
+    var fmt = wizardAnswers[2] || wizardAnswers[1];
+    var snd = wizardAnswers[3];
+    var key = fmt + '+' + snd + '+' + answer;
     showWizardResult(key);
   }
 }
+
+function buildSoundOptions(format) {
+  // Build sound options based on format and machine capabilities
+  var q = document.getElementById('ws3-question');
+  var opts = document.getElementById('ws3-options');
+  q.textContent = '3 · Does the film have a soundtrack?';
+
+  var options = [];
+
+  if (format === 'super8' || format === 'regular8') {
+    // 8mm: magnetic (FD1/FD2), optical (RetroScan), silent (MMT/RetroScan)
+    options.push({ val:'magnetic', icon:'🟫', title:'Magnetic Sound', desc:'Dark brown stripe on the film edge' });
+    options.push({ val:'optical',  icon:'〰️', title:'Optical Sound',  desc:'Wavy line next to the frames' });
+    options.push({ val:'silent',   icon:'🔇', title:'Silent',         desc:'No soundtrack at all' });
+  } else if (format === '16mm') {
+    // 16mm: optical (MMT/RetroScan + AEO-Light), silent (MMT/RetroScan). NO magnetic on 16mm.
+    options.push({ val:'optical', icon:'〰️', title:'Optical Sound', desc:'Wavy line next to the frames' });
+    options.push({ val:'silent',  icon:'🔇', title:'Silent',        desc:'No soundtrack' });
+  } else if (format === '9.5mm') {
+    // 9.5mm: optical (RetroScan + AEO-Light), silent (RetroScan). NO magnetic.
+    options.push({ val:'optical', icon:'〰️', title:'Optical Sound', desc:'Wavy line next to the frames' });
+    options.push({ val:'silent',  icon:'🔇', title:'Silent',        desc:'No soundtrack' });
+  } else if (format === '35mm') {
+    // 35mm: optical (RetroScan + AEO-Light), silent (RetroScan). NO magnetic.
+    options.push({ val:'optical', icon:'〰️', title:'Optical Sound', desc:'Wavy line next to the frames' });
+    options.push({ val:'silent',  icon:'🔇', title:'Silent',        desc:'No soundtrack' });
+  }
+
+  opts.innerHTML = options.map(function(o) {
+    return '<div class="wizard-option" onclick="wizardNext(3,\'' + o.val + '\')">' +
+      '<span class="opt-icon">' + o.icon + '</span>' +
+      '<div class="opt-title">' + o.title + '</div>' +
+      '<div class="opt-desc">' + o.desc + '</div>' +
+      '</div>';
+  }).join('');
+}
+
 
 function showWizardResult(key) {
   const result = WIZARD_RESULTS[key] || WIZARD_RESULTS[wizardAnswers[1]] || {
@@ -3927,14 +3934,15 @@ function showWizardResult(key) {
 
 function wizardRestart() {
   wizardAnswers = {};
-  ['ws1','ws2','ws3','ws-result'].forEach(id => {
-    const el = document.getElementById(id);
+  ['ws1','ws2','ws3','ws4','ws-result'].forEach(function(id) {
+    var el = document.getElementById(id);
     if (el) el.classList.remove('active');
   });
-  ['wd0','wd1','wd2'].forEach(id => {
-    const el = document.getElementById(id);
+  ['wd0','wd1','wd2','wd3'].forEach(function(id) {
+    var el = document.getElementById(id);
     if (el) el.classList.remove('done');
   });
+  document.getElementById('ws3-options').innerHTML = '';
   document.getElementById('ws1').classList.add('active');
 }
 
