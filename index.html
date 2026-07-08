@@ -4793,26 +4793,20 @@ function renderTutorialStep() {
   const isLast = tutStep === total - 1;
   const isFirst = tutStep === 0;
 
-  // Progress bars
   const prog = document.getElementById('tutorial-progress');
-  prog.innerHTML = TUTORIAL_STEPS.map((_, i) =>
-    `<div class="tutorial-progress-bar ${i < tutStep ? 'done' : i === tutStep ? 'active' : ''}"></div>`
-  ).join('');
+  prog.innerHTML = TUTORIAL_STEPS.map(function(_, i) {
+    return '<div class="tutorial-progress-bar ' + (i < tutStep ? 'done' : i === tutStep ? 'active' : '') + '"></div>';
+  }).join('');
 
-  // Body
-  document.getElementById('tutorial-body').innerHTML = `
-    <span class="tutorial-step-icon">${step.icon}</span>
-    <div class="tutorial-step-title">${step.title}</div>
-    <div class="tutorial-step-text">${step.text}</div>
-    ${step.highlight ? `<div class="tutorial-highlight">👈 Find this in the left sidebar</div>` : ''}
-  `;
+  document.getElementById('tutorial-body').innerHTML =
+    '<span class="tutorial-step-icon">' + step.icon + '</span>' +
+    '<div class="tutorial-step-title">' + step.title + '</div>' +
+    '<div class="tutorial-step-text">' + step.text + '</div>' +
+    (step.highlight ? '<div class="tutorial-highlight">👈 Find this in the left sidebar</div>' : '');
 
-  // Counter
-  document.getElementById('tutorial-counter').textContent = `${tutStep + 1} / ${total}`;
-
-  // Buttons
+  document.getElementById('tutorial-counter').textContent = (tutStep + 1) + ' / ' + total;
   document.getElementById('tutorial-prev').style.display = isFirst ? 'none' : '';
-  const nextBtn = document.getElementById('tutorial-next');
+  var nextBtn = document.getElementById('tutorial-next');
   nextBtn.textContent = isLast ? '✓ Done' : 'Next →';
 }
 
@@ -5101,14 +5095,14 @@ checkNotifications();
 </div>
 
 <!-- TUTORIAL OVERLAY -->
-<div class="tutorial-overlay" id="tutorial-overlay" style="display:none!important">
+<div class="tutorial-overlay" id="tutorial-overlay" style="display:none">
   <div class="tutorial-box">
     <div class="tutorial-header">
       <div class="tutorial-header-left">
         <div class="tutorial-avatar">🎓</div>
         <div>
           <div class="tutorial-title">CineOps Guide</div>
-          <div class="tutorial-subtitle">Your personal handbook assistant</div>
+          <div class="tutorial-subtitle">Your personal handbook tour</div>
         </div>
       </div>
       <button class="tutorial-close" onclick="endTutorial()">✕</button>
@@ -5117,77 +5111,10 @@ checkNotifications();
     <div class="tutorial-body" id="tutorial-body"></div>
     <div class="tutorial-footer">
       <span class="tutorial-counter" id="tutorial-counter"></span>
-      <div style="display:flex;align-items:center;gap:1rem;">
-        <button class="tutorial-skip" onclick="endTutorial()">Skip tutorial</button>
-        <div class="tutorial-btn-group">
-          <button class="tutorial-btn" id="tutorial-prev" onclick="tutorialPrev()">← Back</button>
-          <button class="tutorial-btn primary" id="tutorial-next" onclick="tutorialNext()">Next →</button>
-        </div>
-
-        <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">
-          <h3 style="color:var(--accent);font-size:1rem;margin-bottom:1rem;">🚨 When to Contact Leadership Immediately</h3>
-          <p style="color:var(--text-dim);font-size:0.8rem;margin-bottom:1rem;">Stop what you are doing and inform leadership without delay in any of the following situations:</p>
-
-          <div style="display:flex;flex-direction:column;gap:0.65rem;">
-
-            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.1rem;flex-shrink:0;">🔥</span>
-              <div>
-                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Nitrate Film detected</div>
-                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">Always — before any nitrate reel is scanned. Fire risk, lethal gases, emergency plan must be confirmed first.</div>
-              </div>
-            </div>
-
-            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.1rem;flex-shrink:0;">⚠️</span>
-              <div>
-                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Vinegar Syndrome — Stage 3 or film keeps tearing</div>
-                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">If the film is powdery, rust-like, or snaps repeatedly during scanning — stop immediately. The film may be beyond saving.</div>
-              </div>
-            </div>
-
-            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.1rem;flex-shrink:0;">🦠</span>
-              <div>
-                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Mouldy Film found</div>
-                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">Always — no mouldy film goes through any machine without leadership approval. Contamination risk for the entire collection.</div>
-              </div>
-            </div>
-
-            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.1rem;flex-shrink:0;">💧</span>
-              <div>
-                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Water damage with blocking</div>
-                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">If film layers are fused together — do not scan. Leadership decides whether restoration is possible.</div>
-              </div>
-            </div>
-
-            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.1rem;flex-shrink:0;">🎞️</span>
-              <div>
-                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Unknown format or unidentifiable damage</div>
-                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">If the format or damage type cannot be identified — do not guess. Ask before proceeding.</div>
-              </div>
-            </div>
-
-            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.1rem;flex-shrink:0;">📋</span>
-              <div>
-                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Deviation from job order required</div>
-                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">Per House Rule 9 — no exceptions to the agreed job sequence without prior discussion.</div>
-              </div>
-            </div>
-
-            <div style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.3);border-radius:8px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.1rem;flex-shrink:0;">⚡</span>
-              <div>
-                <div style="font-weight:600;color:var(--text);font-size:0.85rem;">Machine behaves abnormally</div>
-                <div style="color:var(--text-dim);font-size:0.78rem;margin-top:0.2rem;">Unusual sounds, repeated film tears, unexpected stops, or any behaviour outside the norm — stop the scan and report immediately.</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
+      <div class="tutorial-btn-group">
+        <button class="tutorial-skip" onclick="endTutorial()">Skip</button>
+        <button class="tutorial-btn" id="tutorial-prev" onclick="tutorialPrev()">← Back</button>
+        <button class="tutorial-btn primary" id="tutorial-next" onclick="tutorialNext()">Next →</button>
       </div>
     </div>
   </div>
