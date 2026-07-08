@@ -1074,30 +1074,35 @@
     </div>
     <div class="no-results" id="no-results">No results found</div>
 
+    <!-- NAVIGATION -->
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.nav">Navigation</div>
-      <div class="sidebar-item active" onclick="showView('chat')" data-search="ai assistant chat">
-        <div class="sidebar-item-left"><span class="sidebar-icon">💬</span> <span data-i18n-text="nav.assistant">Assistant</span></div>
-      </div>
-      <div class="sidebar-item" onclick="showView('wizard')" data-search="wizard machine selector which machine">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🧭</span> <span data-i18n-text="nav.wizard">Machine Wizard</span></div>
-      </div>
-      <div class="sidebar-item" onclick="showView('foreword')" data-search="foreword welcome handbook intro">
+      <div class="sidebar-item" onclick="showView('foreword')" data-search="foreword welcome intro">
         <div class="sidebar-item-left"><span class="sidebar-icon">📖</span> <span data-i18n-text="nav.foreword">Foreword</span></div>
       </div>
-      <div class="sidebar-item" onclick="showView('filmid')" data-search="identify film type format visual guide 8mm">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🔍</span> <span data-i18n-text="nav.filmid">Film ID Guide</span></div>
-      </div>
-      <div class="sidebar-item" onclick="showView('sheets')" data-search="sheets google spreadsheet links">
-        <div class="sidebar-item-left"><span class="sidebar-icon">📊</span> <span data-i18n-text="nav.sheets">Sheets</span></div>
-      </div>
-      <div class="sidebar-item" onclick="showView('hausregeln')" data-search="hausregeln rules department conduct">
+      <div class="sidebar-item" onclick="showView('hausregeln')" data-search="rules department conduct">
         <div class="sidebar-item-left"><span class="sidebar-icon">📋</span> <span data-i18n-text="nav.rules">Dept. Rules</span></div>
       </div>
-      <div class="sidebar-item" onclick="showView('qrcode')" data-search="qr code generator print machine link">
+      <div class="sidebar-item" onclick="showView('filmid')" data-search="identify film type 8mm">
+        <div class="sidebar-item-left"><span class="sidebar-icon">🔍</span> <span data-i18n-text="nav.filmid">Film ID Guide</span></div>
+      </div>
+      <div class="sidebar-item" onclick="showView('wizard')" data-search="wizard machine selector">
+        <div class="sidebar-item-left"><span class="sidebar-icon">🧭</span> <span data-i18n-text="nav.wizard">Machine Wizard</span></div>
+      </div>
+      <div class="sidebar-item" onclick="showView('checklist')" data-search="checklist scan sop">
+        <div class="sidebar-item-left"><span class="sidebar-icon">✅</span> <span data-i18n-text="nav.checklist">Scan Checklist</span></div>
+      </div>
+      <div class="sidebar-item" onclick="showView('sheets')" data-search="sheets google spreadsheet">
+        <div class="sidebar-item-left"><span class="sidebar-icon">📊</span> <span data-i18n-text="nav.sheets">Sheets</span></div>
+      </div>
+      <div class="sidebar-item" onclick="showView('qrcode')" data-search="qr code generator">
         <div class="sidebar-item-left"><span class="sidebar-icon">📱</span> <span data-i18n-text="nav.qr">QR Codes</span></div>
       </div>
+      <div class="sidebar-item" onclick="showView('chat')" data-search="assistant chat">
+        <div class="sidebar-item-left"><span class="sidebar-icon">💬</span> <span data-i18n-text="nav.assistant">Assistant</span></div>
+      </div>
     </div>
+
     <!-- RECENT -->
     <div class="sidebar-section" id="recent-section" style="display:none;">
       <div class="sidebar-label" data-i18n="sidebar.recent">Recently Viewed</div>
@@ -1108,73 +1113,75 @@
       <div class="sidebar-label" data-i18n="sidebar.favourites">Favourites ⭐</div>
       <div id="fav-list"></div>
     </div>
+
+    <!-- MACHINES -->
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.machines">Machines</div>
-      <div class="sidebar-item" onclick="showView('mmt')"  data-search="mmt scanner threading gate sprocket software">
+      <div class="sidebar-item" onclick="showView('mmt')" data-search="mmt scanner threading gate">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎞️</span> <span data-i18n-text="card.mmt.title">MMT Scanner</span></div><button class="fav-btn" onclick="toggleFav(event,'mmt')" id="fav-mmt" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('retroscan')"  data-search="retroscan movistuff hardware lightpin forward export overnight">
+      <div class="sidebar-item" onclick="showView('retroscan')" data-search="retroscan movistuff lightpin">
         <div class="sidebar-item-left"><span class="sidebar-icon">📽️</span> <span data-i18n-text="card.retroscan.title">RetroScan (Movistuff)</span></div><button class="fav-btn" onclick="toggleFav(event,'retroscan')" id="fav-retroscan" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('fd')"  data-search="film digital fd fd1 fd2 ghost frames speed c3">
+      <div class="sidebar-item" onclick="showView('fd')" data-search="film digital fd1 fd2 ghost frames">
         <div class="sidebar-item-left"><span class="sidebar-icon">⚡</span> <span data-i18n-text="card.fd.title">Film-Digital (FD)</span></div><button class="fav-btn" onclick="toggleFav(event,'fd')" id="fav-fd" title="Favourite">☆</button>
       </div>
     </div>
+
+    <!-- FILM TYPES -->
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.filmtypes">Film Types</div>
-      <div class="sidebar-item" onclick="showView('super8')"  data-search="super 8 kodak 1965 cartridge sound silent">
+      <div class="sidebar-item" onclick="showView('super8')" data-search="super 8 kodak 1965">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.super8">Super 8</span></div><button class="fav-btn" onclick="toggleFav(event,'super8')" id="fav-super8" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('regular8')"  data-search="regular 8 standard 8 1930s silent">
+      <div class="sidebar-item" onclick="showView('regular8')" data-search="regular 8 standard 1930s">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.regular8">Regular 8 / Standard 8</span></div><button class="fav-btn" onclick="toggleFav(event,'regular8')" id="fav-regular8" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('9.5mm')"  data-search="9.5mm pathe pathé baby central perforation">
+      <div class="sidebar-item" onclick="showView('9.5mm')" data-search="9.5mm pathe central perforation">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.9mm5">9.5mm Pathé</span></div><button class="fav-btn" onclick="toggleFav(event,'9.5mm')" id="fav-9.5mm" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('16mm')"  data-search="16mm eastman kodak documentary optical magnetic">
+      <div class="sidebar-item" onclick="showView('16mm')" data-search="16mm eastman kodak documentary">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.16mm">16mm</span></div><button class="fav-btn" onclick="toggleFav(event,'16mm')" id="fav-16mm" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('35mm')"  data-search="35mm cinema professional nitrate cinemascope">
+      <div class="sidebar-item" onclick="showView('35mm')" data-search="35mm cinema professional nitrate">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎬</span> <span data-i18n-text="nav.35mm">35mm</span></div><button class="fav-btn" onclick="toggleFav(event,'35mm')" id="fav-35mm" title="Favourite">☆</button>
       </div>
     </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label" data-i18n="sidebar.special">Special Cases</div>
-      <div class="sidebar-item" onclick="showView('tenite')"  data-search="tenite reel decay bloom plastic spool grey">
-        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> <span data-i18n-text="nav.tenite">Tenite Reel Decay</span></div><button class="fav-btn" onclick="toggleFav(event,'tenite')" id="fav-tenite" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('vinegar')"  data-search="vinegar syndrome acetate smell channeling buckling ppe">
-        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> <span data-i18n-text="nav.vinegar">Vinegar Syndrome</span></div><button class="fav-btn" onclick="toggleFav(event,'vinegar')" id="fav-vinegar" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('mould')"  data-search="mould mold biohazard spores ffp2 ffp3 fuzzy">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🦠</span> <span data-i18n-text="nav.mould">Mouldy Film (Biohazard)</span></div><button class="fav-btn" onclick="toggleFav(event,'mould')" id="fav-mould" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('water')"  data-search="water damage wet sticky emulsion ferrotype drying">
-        <div class="sidebar-item-left"><span class="sidebar-icon">💧</span> <span data-i18n-text="nav.water">Water Damage</span></div><button class="fav-btn" onclick="toggleFav(event,'water')" id="fav-water" title="Favourite">☆</button>
-      </div>
-      <div class="sidebar-item" onclick="showView('nitrate')"  data-search="nitrate fire flammable 35mm stages decay">
-        <div class="sidebar-item-left"><span class="sidebar-icon">🔥</span> <span data-i18n-text="nav.nitrate">Nitrate Film</span></div><button class="fav-btn" onclick="toggleFav(event,'nitrate')" id="fav-nitrate" title="Favourite">☆</button>
-      </div>
-    </div>
+
+    <!-- SOUND -->
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="sidebar.sound">Sound</div>
-      <div class="sidebar-item" onclick="showView('magnetic')"  data-search="magnetic sound magstripe brown stripe fd1 fd2 mono stereo full coat">
+      <div class="sidebar-item" onclick="showView('magnetic')" data-search="magnetic sound magstripe brown">
         <div class="sidebar-item-left"><span class="sidebar-icon">🔊</span> <span data-i18n-text="nav.magnetic">Magnetic Sound</span></div><button class="fav-btn" onclick="toggleFav(event,'magnetic')" id="fav-magnetic" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('optical')"  data-search="optical sound variable area density aeolight retroscan wavy line">
+      <div class="sidebar-item" onclick="showView('optical')" data-search="optical sound variable area aeolight">
         <div class="sidebar-item-left"><span class="sidebar-icon">〰️</span> <span data-i18n-text="nav.optical">Optical Sound</span></div><button class="fav-btn" onclick="toggleFav(event,'optical')" id="fav-optical" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('sepmag')"  data-search="sepmag separate magnetic two reels full coat sync">
+      <div class="sidebar-item" onclick="showView('sepmag')" data-search="sepmag separate magnetic two reels">
         <div class="sidebar-item-left"><span class="sidebar-icon">🎙️</span> <span data-i18n-text="nav.sepmag">Sepmag</span></div><button class="fav-btn" onclick="toggleFav(event,'sepmag')" id="fav-sepmag" title="Favourite">☆</button>
       </div>
-      <div class="sidebar-item" onclick="showView('aeolight')"  data-search="aeo light bounding box frame pitch wav extract calibrate">
+      <div class="sidebar-item" onclick="showView('aeolight')" data-search="aeo light bounding box wav">
         <div class="sidebar-item-left"><span class="sidebar-icon">💻</span> <span data-i18n-text="nav.aeolight">AEO-Light</span></div><button class="fav-btn" onclick="toggleFav(event,'aeolight')" id="fav-aeolight" title="Favourite">☆</button>
       </div>
     </div>
+
+    <!-- SPECIAL CASES -->
     <div class="sidebar-section">
-      <div class="sidebar-label" data-i18n="sidebar.workflow">Workflow</div>
-      <div class="sidebar-item" onclick="showView('checklist')"  data-search="checklist scan sop quick check pre production">
-        <div class="sidebar-item-left"><span class="sidebar-icon">✅</span> <span data-i18n-text="nav.checklist">Scan Checklist</span></div><button class="fav-btn" onclick="toggleFav(event,'checklist')" id="fav-checklist" title="Favourite">☆</button>
+      <div class="sidebar-label" data-i18n="sidebar.special">Special Cases</div>
+      <div class="sidebar-item" onclick="showView('tenite')" data-search="tenite reel decay bloom">
+        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> <span data-i18n-text="nav.tenite">Tenite Reel Decay</span></div><button class="fav-btn" onclick="toggleFav(event,'tenite')" id="fav-tenite" title="Favourite">☆</button>
+      </div>
+      <div class="sidebar-item" onclick="showView('vinegar')" data-search="vinegar syndrome acetate smell">
+        <div class="sidebar-item-left"><span class="sidebar-icon">⚠️</span> <span data-i18n-text="nav.vinegar">Vinegar Syndrome</span></div><button class="fav-btn" onclick="toggleFav(event,'vinegar')" id="fav-vinegar" title="Favourite">☆</button>
+      </div>
+      <div class="sidebar-item" onclick="showView('mould')" data-search="mould biohazard spores ffp2">
+        <div class="sidebar-item-left"><span class="sidebar-icon">🦠</span> <span data-i18n-text="nav.mould">Mouldy Film (Biohazard)</span></div><button class="fav-btn" onclick="toggleFav(event,'mould')" id="fav-mould" title="Favourite">☆</button>
+      </div>
+      <div class="sidebar-item" onclick="showView('water')" data-search="water damage wet sticky emulsion">
+        <div class="sidebar-item-left"><span class="sidebar-icon">💧</span> <span data-i18n-text="nav.water">Water Damage</span></div><button class="fav-btn" onclick="toggleFav(event,'water')" id="fav-water" title="Favourite">☆</button>
+      </div>
+      <div class="sidebar-item" onclick="showView('nitrate')" data-search="nitrate fire flammable 35mm">
+        <div class="sidebar-item-left"><span class="sidebar-icon">🔥</span> <span data-i18n-text="nav.nitrate">Nitrate Film</span></div><button class="fav-btn" onclick="toggleFav(event,'nitrate')" id="fav-nitrate" title="Favourite">☆</button>
       </div>
     </div>
   </aside>
@@ -4928,6 +4935,40 @@ function initOfflineMode() {
   update();
 }
 
+
+// ===== PASSWORD =====
+const CINEOPS_PWD = 'BLACKCAT';
+
+function checkPassword() {
+  const input = document.getElementById('pwd-input');
+  const error = document.getElementById('pwd-error');
+  const val = input.value.trim().toUpperCase();
+  if (val === CINEOPS_PWD) {
+    document.getElementById('pwd-screen').style.display = 'none';
+    sessionStorage.setItem('cineops_auth', '1');
+  } else {
+    input.classList.add('error');
+    error.textContent = 'Incorrect password. Please try again.';
+    input.value = '';
+    setTimeout(() => input.classList.remove('error'), 400);
+    setTimeout(() => { error.textContent = ''; }, 3000);
+  }
+}
+
+function initPassword() {
+  const auth = sessionStorage.getItem('cineops_auth');
+  const screen = document.getElementById('pwd-screen');
+  if (auth === '1') {
+    screen.style.display = 'none';
+  } else {
+    screen.style.display = 'flex';
+    setTimeout(() => {
+      const inp = document.getElementById('pwd-input');
+      if (inp) inp.focus();
+    }, 300);
+  }
+}
+
 // ===== SHEETS =====
 function loadSheets() {
   const sheets = JSON.parse(localStorage.getItem('cineops_sheets') || '[]');
@@ -5071,6 +5112,7 @@ function printPanel(panelId, label) {
 // Init
 captureEnContent();
 applyTranslations();
+initPassword();
 setDailyTip();
 initTheme();
 initPwaBanner();
@@ -5100,6 +5142,26 @@ checkNotifications();
     <button class="timer-btn" style="grid-column:span 2;font-size:0.7rem;" onclick="timer5sec()">⏰ 2s leader check</button>
   </div>
   <div class="timer-laps" id="timer-laps"></div>
+</div>
+
+
+<!-- PASSWORD SCREEN -->
+<div class="pwd-screen" id="pwd-screen">
+  <div class="pwd-box">
+    <div class="pwd-logo">🎞 CINEOPS</div>
+    <div class="pwd-sub">// Film Department Handbook</div>
+    <div class="pwd-film-strip">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="pwd-label">Enter access password</div>
+    <input class="pwd-input" id="pwd-input" type="password"
+      placeholder="••••••••"
+      onkeydown="if(event.key==='Enter') checkPassword()"
+      autocomplete="current-password">
+    <button class="pwd-btn" onclick="checkPassword()">Enter</button>
+    <div class="pwd-error" id="pwd-error"></div>
+  </div>
 </div>
 
 <!-- TUTORIAL OVERLAY -->
