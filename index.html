@@ -1183,6 +1183,9 @@
       <div class="sidebar-item" onclick="showView('nitrate')" data-search="nitrate fire flammable 35mm">
         <div class="sidebar-item-left"><span class="sidebar-icon">🔥</span> <span data-i18n-text="nav.nitrate">Nitrate Film</span></div><button class="fav-btn" onclick="toggleFav(event,'nitrate')" id="fav-nitrate" title="Favourite">☆</button>
       </div>
+      <div class="sidebar-item" onclick="showView('cinedamage')" data-search="cine damage codes warehouse overexposed underexposed hair dirt">
+        <div class="sidebar-item-left"><span class="sidebar-icon">📋</span> CINE Damage Codes</div><button class="fav-btn" onclick="toggleFav(event,'cinedamage')" id="fav-cinedamage" title="Favourite">☆</button>
+      </div>
     </div>
   </aside>
 
@@ -2665,6 +2668,117 @@
       </div>
     </div>
 
+
+    <!-- CINE DAMAGE CODES PANEL -->
+    <div class="wiki-panel" id="view-cinedamage">
+      <div class="wiki-content">
+        <div class="lang-banner">🌐 <span data-i18n="banner.text">Use the Assistant to ask in your language.</span></div>
+        <h2>📋 CINE Damage Codes</h2>
+        <button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
+        <p style="color:var(--text-mid);font-size:0.875rem;margin-bottom:1.5rem;">Tap any code to copy it — then paste it directly into the Warehouse App.</p>
+
+        <div style="display:flex;flex-direction:column;gap:0.65rem;">
+
+          <div onclick="copyCineCode('Overexposed Film (Severely)')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Overexposed Film (Severely)</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Overexposed (too bright) film</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+          <div onclick="copyCineCode('Underexposed Film (Severely)')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Underexposed Film (Severely)</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Underexposed (too dark) film</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+          <div onclick="copyCineCode('Embedded Hair / Dirt')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Embedded Hair / Dirt</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Hair or dirt present on the source material</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+          <div onclick="copyCineCode('Perforation Damage / Unstable Image')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Perforation Damage / Unstable Image</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Image instability due to damaged perforations</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+          <div onclick="copyCineCode('Tenite Reel Decay')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Tenite Reel Decay</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Chemical degradation of plastic reels</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+          <div onclick="copyCineCode('Vinegar Syndrome')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Vinegar Syndrome</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Vinegar syndrome — chemical acetate decay</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+          <div onclick="copyCineCode('Mouldy Film (Biohazard)')" style="background:var(--surface2);border:1px solid rgba(201,64,64,0.4);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(201,64,64,0.4)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Mouldy Film (Biohazard)</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Mold on the film — do NOT scan without approval</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+          <div onclick="copyCineCode('Water Damage')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Water Damage</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Film damaged by water</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+          <div onclick="copyCineCode('Nitrate Film')" style="background:rgba(201,64,64,0.08);border:1px solid rgba(201,64,64,0.4);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(201,64,64,0.4)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+              <div>
+                <div style="font-weight:600;color:var(--text);font-size:0.88rem;margin-bottom:0.2rem;">Nitrate Film</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">🔥 Flammable film — consult leadership before scanning</div>
+              </div>
+              <span style="font-size:1.1rem;flex-shrink:0;color:var(--text-dim);">📋</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Copy toast -->
+        <div id="copy-toast" style="display:none;position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-weight:600;font-size:0.8rem;padding:0.6rem 1.25rem;border-radius:8px;z-index:400;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+          ✅ Copied to clipboard!
+        </div>
+
+      </div>
+    </div>
+
     <!-- INPUT -->
     <div class="input-area" id="input-area">
       <div class="input-row">
@@ -3965,7 +4079,7 @@ const PAGE_LABELS = {
   'magnetic':'Magnetic Sound','optical':'Optical Sound','sepmag':'Sepmag',
   'aeolight':'AEO-Light','checklist':'Scan Checklist',
   'wizard':'Machine Wizard','foreword':'Foreword','filmid':'Film ID Guide',
-  'sheets':'Sheets','hausregeln':'Dept. Rules','qrcode':'QR Codes'
+  'sheets':'Sheets','hausregeln':'Dept. Rules','qrcode':'QR Codes','cinedamage':'CINE Damage Codes'
 };
 
 const PAGE_ICONS = {
@@ -3974,7 +4088,7 @@ const PAGE_ICONS = {
   'tenite':'⚠️','vinegar':'⚠️','mould':'🦠','water':'💧','nitrate':'🔥',
   'magnetic':'🔊','optical':'〰️','sepmag':'🎙️',
   'aeolight':'💻','checklist':'✅','wizard':'🧭','foreword':'📖','filmid':'🔍',
-  'sheets':'📊','hausregeln':'📋','qrcode':'📱'
+  'sheets':'📊','hausregeln':'📋','qrcode':'📱','cinedamage':'📋'
 };
 
 function toggleFav(e, view) {
@@ -4971,6 +5085,35 @@ function initPassword() {
       if (inp) inp.focus();
     }, 100);
   }
+}
+
+
+// ===== CINE DAMAGE CODES =====
+function copyCineCode(code) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(function() {
+      showCopyToast(code);
+    });
+  } else {
+    // Fallback for older browsers
+    var ta = document.createElement('textarea');
+    ta.value = code;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showCopyToast(code);
+  }
+}
+
+function showCopyToast(code) {
+  var toast = document.getElementById('copy-toast');
+  if (!toast) return;
+  toast.textContent = '✅ Copied: ' + code;
+  toast.style.display = 'block';
+  setTimeout(function() { toast.style.display = 'none'; }, 2500);
 }
 
 // ===== SHEETS =====
