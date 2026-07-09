@@ -4944,7 +4944,9 @@ function checkPassword() {
   const error = document.getElementById('pwd-error');
   const val = input.value.trim().toUpperCase();
   if (val === CINEOPS_PWD) {
-    document.getElementById('pwd-screen').style.display = 'none';
+    const s = document.getElementById('pwd-screen');
+    s.style.display = 'none';
+    document.body.style.overflow = '';
     sessionStorage.setItem('cineops_auth', '1');
   } else {
     input.classList.add('error');
@@ -4960,12 +4962,14 @@ function initPassword() {
   const screen = document.getElementById('pwd-screen');
   if (auth === '1') {
     screen.style.display = 'none';
+    document.body.style.overflow = '';
   } else {
-    screen.style.display = 'flex';
+    screen.style.cssText = 'position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:999999!important;background:#0a0a0a!important;display:flex!important;align-items:center;justify-content:center;flex-direction:column;';
+    document.body.style.overflow = 'hidden';
     setTimeout(() => {
       const inp = document.getElementById('pwd-input');
       if (inp) inp.focus();
-    }, 300);
+    }, 100);
   }
 }
 
@@ -5110,9 +5114,9 @@ function printPanel(panelId, label) {
 }
 
 // Init
+initPassword();
 captureEnContent();
 applyTranslations();
-initPassword();
 setDailyTip();
 initTheme();
 initPwaBanner();
@@ -5146,7 +5150,7 @@ checkNotifications();
 
 
 <!-- PASSWORD SCREEN -->
-<div class="pwd-screen" id="pwd-screen">
+<div class="pwd-screen" id="pwd-screen" style="position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:999999!important;background:#0a0a0a!important;display:flex;align-items:center;justify-content:center;flex-direction:column;">
   <div class="pwd-box">
     <div class="pwd-logo">🎞 CINEOPS</div>
     <div class="pwd-sub">// Film Department Handbook</div>
