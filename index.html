@@ -2514,157 +2514,183 @@
     <!-- FILM ID GUIDE PANEL -->
     <div class="wiki-panel" id="view-filmid">
       <div class="filmid-panel">
-        <h2>🔍 Film Identification Guide</h2><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button><button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
+        <h2>🔍 Film Identification Guide</h2>
+        <button class="print-pg-btn" onclick="window.print()">🖨️ Print</button>
 
         <div class="filmid-diagram">
           <h3>Step-by-Step: Which film do I have?</h3>
           <div class="decision-tree">
+
             <div class="dt-step">
               <div class="dt-num">1</div>
               <div class="dt-content">
                 <div class="dt-q">How wide is the film strip?</div>
                 <div class="dt-answers">
-                  <div class="dt-a match">8 mm → Step 2</div>
-                  <div class="dt-a match">9.5 mm → Pathé (central perf!)</div>
-                  <div class="dt-a match">16 mm → 16mm</div>
-                  <div class="dt-a match">35 mm → 35mm</div>
+                  <div class="dt-a match">8 mm → go to Step 2</div>
+                  <div class="dt-a match">9.5 mm → Pathé (central perf between frames) → go to Step 4</div>
+                  <div class="dt-a match">16 mm → 16mm film → go to Step 3</div>
+                  <div class="dt-a match">35 mm → RetroScan only. Check for NITRATE on edge!</div>
                 </div>
               </div>
             </div>
+
             <div class="dt-arrow">↓ (if 8mm)</div>
             <div class="dt-step">
               <div class="dt-num">2</div>
               <div class="dt-content">
                 <div class="dt-q">How big are the perforations relative to the frame?</div>
                 <div class="dt-answers">
-                  <div class="dt-a match">Small perfs, large image area → Super 8</div>
-                  <div class="dt-a match">Large perfs, smaller image area → Regular 8</div>
+                  <div class="dt-a match">Small perfs, large image area → Super 8 → go to Step 3</div>
+                  <div class="dt-a match">Large perfs, smaller image area → Regular 8 → go to Step 3</div>
                 </div>
               </div>
             </div>
-            <div class="dt-arrow">↓ (if 8mm, either type)</div>
+
+            <div class="dt-arrow">↓</div>
             <div class="dt-step">
               <div class="dt-num">3</div>
               <div class="dt-content">
                 <div class="dt-q">Is there a dark brown stripe along the edge?</div>
                 <div class="dt-answers">
-                  <div class="dt-a match">Yes → Magnetic Sound! Use Film-Digital (FD2)</div>
-                  <div class="dt-a match">No brown stripe → Silent or Optical Sound</div>
+                  <div class="dt-a match">Yes → Magnetic Sound → go to Step 5</div>
+                  <div class="dt-a match">No brown stripe → go to Step 4</div>
                 </div>
               </div>
             </div>
-            <div class="dt-arrow">↓ (if no brown stripe)</div>
+
+            <div class="dt-arrow">↓ (no brown stripe)</div>
             <div class="dt-step">
               <div class="dt-num">4</div>
               <div class="dt-content">
-                <div class="dt-q">Is there a wavy/zigzag pattern next to the frames?</div>
+                <div class="dt-q">Is there a wavy / zigzag pattern next to the frames?</div>
                 <div class="dt-answers">
-                  <div class="dt-a match">Yes → Optical Sound! Use RetroScan + AEO-Light</div>
-                  <div class="dt-a match">No → Silent film. MMT or RetroScan</div>
+                  <div class="dt-a match">Yes → Optical Sound → RetroScan + AEO-Light (16mm: 26-frame offset)</div>
+                  <div class="dt-a match">No → Silent film → see format cards below for machine</div>
                 </div>
               </div>
             </div>
+
+            <div class="dt-arrow">↓ (if magnetic — from Step 3)</div>
+            <div class="dt-step">
+              <div class="dt-num">5</div>
+              <div class="dt-content">
+                <div class="dt-q">Which format has the magnetic sound?</div>
+                <div class="dt-answers">
+                  <div class="dt-a match">Super 8 + magnetic → Film-Digital FD2</div>
+                  <div class="dt-a match">Regular 8 + magnetic → Film-Digital FD1</div>
+                  <div class="dt-a match">16mm + magnetic → Film-Digital (FD)</div>
+                  <div class="dt-a match">9.5mm / 35mm → No magnetic sound possible</div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
         <div class="filmid-grid">
+
           <div class="filmid-card">
-            <div class="filmid-card-header">
-              <span>Super 8</span><small>Kodak, 1965</small>
-            </div>
+            <div class="filmid-card-header"><span>Super 8</span><small>Kodak, 1965</small></div>
             <div class="filmid-card-body">
               <div class="filmid-row"><span class="filmid-label">Width</span><span class="filmid-value">8 mm</span></div>
               <div class="filmid-row"><span class="filmid-label">Perforations</span><span class="filmid-value accent">Small — next to large frame</span></div>
-              <div class="filmid-row"><span class="filmid-label">Resolution</span><span class="filmid-value">~1.5K–2K</span></div>
-              <div class="filmid-row"><span class="filmid-label">Sound?</span><span class="filmid-value">Silent or mag/optical</span></div>
-              <div class="filmid-row"><span class="filmid-label">Scanners</span><span class="filmid-value">FD2 (sound) · MMT · RetroScan</span></div>
-              <div class="filmid-row"><span class="filmid-label">Loading</span><span class="filmid-value">Cartridge system</span></div>
+              <div class="filmid-row"><span class="filmid-label">Sound</span><span class="filmid-value">Silent · Magnetic · Optical</span></div>
+              <div class="filmid-row"><span class="filmid-label">Magnetic</span><span class="filmid-value accent">FD2 only</span></div>
+              <div class="filmid-row"><span class="filmid-label">Optical</span><span class="filmid-value">RetroScan + AEO-Light</span></div>
+              <div class="filmid-row"><span class="filmid-label">Silent</span><span class="filmid-value">MMT or RetroScan</span></div>
             </div>
           </div>
 
           <div class="filmid-card">
-            <div class="filmid-card-header">
-              <span>Regular 8</span><small>Standard 8, 1930s</small>
-            </div>
+            <div class="filmid-card-header"><span>Regular 8</span><small>Standard 8, 1930s</small></div>
             <div class="filmid-card-body">
               <div class="filmid-row"><span class="filmid-label">Width</span><span class="filmid-value">8 mm</span></div>
               <div class="filmid-row"><span class="filmid-label">Perforations</span><span class="filmid-value accent">Large — similar size to frame</span></div>
-              <div class="filmid-row"><span class="filmid-label">Resolution</span><span class="filmid-value">~1K–1.5K</span></div>
-              <div class="filmid-row"><span class="filmid-label">Sound?</span><span class="filmid-value">Almost always silent</span></div>
-              <div class="filmid-row"><span class="filmid-label">Scanners</span><span class="filmid-value">FD1 (sound) · MMT · RetroScan</span></div>
-              <div class="filmid-row"><span class="filmid-label">Loading</span><span class="filmid-value">Spool / reel</span></div>
+              <div class="filmid-row"><span class="filmid-label">Sound</span><span class="filmid-value">Silent · Magnetic (rare) · Optical</span></div>
+              <div class="filmid-row"><span class="filmid-label">Magnetic</span><span class="filmid-value accent">FD1 only</span></div>
+              <div class="filmid-row"><span class="filmid-label">Optical</span><span class="filmid-value">RetroScan + AEO-Light</span></div>
+              <div class="filmid-row"><span class="filmid-label">Silent</span><span class="filmid-value">MMT or RetroScan</span></div>
             </div>
           </div>
 
           <div class="filmid-card">
-            <div class="filmid-card-header">
-              <span>9.5mm Pathé</span><small>Pathé Frères, 1922</small>
-            </div>
+            <div class="filmid-card-header"><span>9.5mm Pathé</span><small>Pathé Frères, 1922</small></div>
             <div class="filmid-card-body">
               <div class="filmid-row"><span class="filmid-label">Width</span><span class="filmid-value">9.5 mm</span></div>
               <div class="filmid-row"><span class="filmid-label">Perforations</span><span class="filmid-value accent">Single CENTRAL perf between frames</span></div>
-              <div class="filmid-row"><span class="filmid-label">Resolution</span><span class="filmid-value">~1.5K–2K</span></div>
-              <div class="filmid-row"><span class="filmid-label">Sound?</span><span class="filmid-value">Rare optical (later versions)</span></div>
+              <div class="filmid-row"><span class="filmid-label">Sound</span><span class="filmid-value">Silent · Optical (rare)</span></div>
+              <div class="filmid-row"><span class="filmid-label">No magnetic</span><span class="filmid-value">Not possible on 9.5mm</span></div>
               <div class="filmid-row"><span class="filmid-label">Scanners</span><span class="filmid-value">MMT · RetroScan</span></div>
-              <div class="filmid-row"><span class="filmid-label">⚠️ Handle</span><span class="filmid-value">Delicate! Cotton gloves always</span></div>
+              <div class="filmid-row"><span class="filmid-label">⚠️</span><span class="filmid-value">Cotton gloves — central perf tears easily</span></div>
             </div>
           </div>
 
           <div class="filmid-card">
-            <div class="filmid-card-header">
-              <span>16mm</span><small>Eastman Kodak, 1923</small>
-            </div>
+            <div class="filmid-card-header"><span>16mm</span><small>Eastman Kodak, 1923</small></div>
             <div class="filmid-card-body">
               <div class="filmid-row"><span class="filmid-label">Width</span><span class="filmid-value">16 mm</span></div>
-              <div class="filmid-row"><span class="filmid-label">Perforations</span><span class="filmid-value">1 per frame (one side)</span></div>
-              <div class="filmid-row"><span class="filmid-label">Resolution</span><span class="filmid-value">~2K–3K</span></div>
-              <div class="filmid-row"><span class="filmid-label">Sound?</span><span class="filmid-value">Silent, optical, or magnetic</span></div>
-              <div class="filmid-row"><span class="filmid-label">Scanners</span><span class="filmid-value">FD (sound) · MMT · RetroScan</span></div>
-              <div class="filmid-row"><span class="filmid-label">Optical offset</span><span class="filmid-value accent">26 frames ahead in AEO-Light</span></div>
+              <div class="filmid-row"><span class="filmid-label">Perforations</span><span class="filmid-value">1 per frame — one side only</span></div>
+              <div class="filmid-row"><span class="filmid-label">Sound</span><span class="filmid-value">Silent · Optical · Magnetic</span></div>
+              <div class="filmid-row"><span class="filmid-label">Magnetic</span><span class="filmid-value accent">Film-Digital (FD)</span></div>
+              <div class="filmid-row"><span class="filmid-label">Optical</span><span class="filmid-value">MMT or RetroScan + AEO-Light</span></div>
+              <div class="filmid-row"><span class="filmid-label">Silent</span><span class="filmid-value">MMT or RetroScan</span></div>
+              <div class="filmid-row"><span class="filmid-label">⚠️ AEO</span><span class="filmid-value accent">26 frames ahead of picture</span></div>
             </div>
           </div>
 
           <div class="filmid-card">
-            <div class="filmid-card-header">
-              <span>35mm</span><small>Edison / Dickson, 1890s</small>
-            </div>
+            <div class="filmid-card-header"><span>35mm</span><small>Edison / Dickson, 1890s</small></div>
             <div class="filmid-card-body">
               <div class="filmid-row"><span class="filmid-label">Width</span><span class="filmid-value">35 mm</span></div>
-              <div class="filmid-row"><span class="filmid-label">Perforations</span><span class="filmid-value">4 per frame (both sides)</span></div>
-              <div class="filmid-row"><span class="filmid-label">Resolution</span><span class="filmid-value">~4K–6K</span></div>
-              <div class="filmid-row"><span class="filmid-label">Sound?</span><span class="filmid-value">Optical or magnetic</span></div>
+              <div class="filmid-row"><span class="filmid-label">Perforations</span><span class="filmid-value">4 per frame — both sides</span></div>
+              <div class="filmid-row"><span class="filmid-label">Sound</span><span class="filmid-value">Silent · Optical</span></div>
+              <div class="filmid-row"><span class="filmid-label">No magnetic</span><span class="filmid-value">Not possible on 35mm</span></div>
               <div class="filmid-row"><span class="filmid-label">Scanner</span><span class="filmid-value accent">RetroScan ONLY</span></div>
-              <div class="filmid-row"><span class="filmid-label">⚠️ Check</span><span class="filmid-value">Look for "NITRATE" on film edge!</span></div>
+              <div class="filmid-row"><span class="filmid-label">🔥 Check</span><span class="filmid-value">Look for "NITRATE" on film edge!</span></div>
             </div>
           </div>
+
         </div>
 
         <div class="filmid-diagram">
           <h3>Quick Sound Reference</h3>
           <div class="decision-tree">
             <div class="dt-step">
-              <div class="dt-num" style="background:var(--accent2)">🔊</div>
+              <div class="dt-num" style="background:#6b3d0f;color:#f5c079;">🟫</div>
               <div class="dt-content">
-                <div class="dt-q">Magnetic Sound (brown stripe on edge)</div>
+                <div class="dt-q">Magnetic Sound — dark brown stripe on edge</div>
                 <div class="dt-answers">
-                  <div class="dt-a match">Super 8 → FD2</div>
-                  <div class="dt-a match">Regular 8 → FD1 (coming soon)</div>
-                  <div class="dt-a match">16mm → Film-Digital</div>
+                  <div class="dt-a match">Super 8 → FD2 only</div>
+                  <div class="dt-a match">Regular 8 → FD1 only</div>
+                  <div class="dt-a match">16mm → Film-Digital (FD)</div>
+                  <div class="dt-a match">9.5mm / 35mm → not possible</div>
                 </div>
               </div>
             </div>
-            <div class="dt-step" style="margin-top:0.75rem">
-              <div class="dt-num" style="background:var(--text-dim)">〰️</div>
+            <div class="dt-step" style="margin-top:0.75rem;">
+              <div class="dt-num" style="background:#2a2a2a;color:#aaa;">〰️</div>
               <div class="dt-content">
-                <div class="dt-q">Optical Sound (wavy line next to frames)</div>
+                <div class="dt-q">Optical Sound — wavy line next to frames</div>
                 <div class="dt-answers">
                   <div class="dt-a match">All formats → RetroScan + AEO-Light</div>
-                  <div class="dt-a match">16mm offset: 26 frames</div>
+                  <div class="dt-a match">16mm → also MMT + AEO-Light possible</div>
+                  <div class="dt-a match">16mm AEO offset → 26 frames ahead</div>
+                </div>
+              </div>
+            </div>
+            <div class="dt-step" style="margin-top:0.75rem;">
+              <div class="dt-num" style="background:#1a2a1a;color:#4ade80;">🔇</div>
+              <div class="dt-content">
+                <div class="dt-q">Silent — no stripe, no wavy line</div>
+                <div class="dt-answers">
+                  <div class="dt-a match">Super 8 / Regular 8 / 9.5mm / 16mm → MMT or RetroScan</div>
+                  <div class="dt-a match">35mm → RetroScan only</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
